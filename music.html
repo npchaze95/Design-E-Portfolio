@@ -13,7 +13,7 @@
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
   import { getAuth } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-  
+     
   const firebaseConfig = {
     apiKey: "AIzaSyDb1hmgoJ-Ynep93t0x5efMr4PT3S5Ratc",
     authDomain: "design-e-portfolio-735b8.firebaseapp.com",
@@ -100,9 +100,9 @@
         border-bottom: 1px solid var(--glass-border);
     }
     
-    body.high-contrast .navbar { 
-        background: #000; 
-        border-bottom: 2px solid white; 
+    body.high-contrast .navbar {
+        background: #000;
+        border-bottom: 2px solid white;
     }
 
     .logo {
@@ -340,8 +340,55 @@
         outline: none;
     }
 
+    /* ─── Default audio controls styling ─── */
     audio::-webkit-media-controls-panel {
         background-color: var(--bg-color);
+    }
+
+    audio::-webkit-media-controls-current-time-display,
+    audio::-webkit-media-controls-time-remaining-display {
+        color: var(--text-primary);
+    }
+
+    audio::-webkit-media-controls-timeline {
+        accent-color: var(--accent-color);
+    }
+
+    /* ─── High-contrast audio controls overrides ─── */
+    body.high-contrast audio::-webkit-media-controls-panel {
+        background-color: #000000;
+        border: 1px solid #FFFF00;
+        border-radius: 8px;
+    }
+
+    body.high-contrast audio::-webkit-media-controls-current-time-display,
+    body.high-contrast audio::-webkit-media-controls-time-remaining-display {
+        color: #FFFF00;
+        text-shadow: none;
+    }
+
+    body.high-contrast audio::-webkit-media-controls-play-button,
+    body.high-contrast audio::-webkit-media-controls-mute-button {
+        filter: invert(1) sepia(1) saturate(100) hue-rotate(10deg);
+    }
+
+    body.high-contrast audio::-webkit-media-controls-timeline {
+        accent-color: #FFFF00;
+        background-color: #333;
+        border-radius: 4px;
+    }
+
+    body.high-contrast audio::-webkit-media-controls-volume-slider {
+        accent-color: #FFFF00;
+        background-color: #333;
+        border-radius: 4px;
+    }
+
+    /* Firefox high-contrast audio support */
+    body.high-contrast audio {
+        color-scheme: dark;
+        accent-color: #FFFF00;
+        background-color: #000;
     }
 
     .download-btn {
@@ -501,7 +548,7 @@
         </ul>
         <button class="accessibility-btn" id="contrast-toggle" aria-label="Toggle High Contrast Mode" title="High Contrast Mode">
             <span aria-hidden="true">◐</span>
-        </button>   
+        </button>
     </nav>
 
     <main class="main-container" id="main-content">
@@ -748,7 +795,7 @@
             let size = (Math.random() * 3) + 1;
             let x = (Math.random() * ((innerWidth - size * 2) - (size * 2)) + size * 2);
             let y = (Math.random() * ((innerHeight - size * 2) - (size * 2)) + size * 2);
-            let directionX = (Math.random() * 0.5) - 0.25; 
+            let directionX = (Math.random() * 0.5) - 0.25;
             let directionY = (Math.random() * 0.5) - 0.25;
             let color = '#84A98C';
             particlesArray.push(new Particle(x, y, directionX, directionY, size, color));
@@ -769,12 +816,12 @@
         let opacityValue = 1;
         for (let a = 0; a < particlesArray.length; a++) {
             for (let b = a; b < particlesArray.length; b++) {
-                let distance = ((particlesArray[a].x - particlesArray[b].x) * (particlesArray[a].x - particlesArray[b].x)) + 
-                               ((particlesArray[a].y - particlesArray[b].y) * (particlesArray[a].y - particlesArray[b].y));
+                let distance = ((particlesArray[a].x - particlesArray[b].x) * (particlesArray[a].x - particlesArray[b].x)) +
+                                ((particlesArray[a].y - particlesArray[b].y) * (particlesArray[a].y - particlesArray[b].y));
                 if (distance < (canvas.width/7) * (canvas.height/7)) {
                     opacityValue = 1 - (distance / 20000);
                     ctx.strokeStyle = document.body.classList.contains('high-contrast') 
-                        ? 'rgba(255, 255, 0,' + opacityValue + ')' 
+                        ? 'rgba(255, 255, 0,' + opacityValue + ')'
                         : 'rgba(132, 169, 140,' + opacityValue + ')';
                     ctx.lineWidth = 1;
                     ctx.beginPath();
@@ -790,4 +837,5 @@
     animate();
 </script>
 </body>
+</html>
 </html>
