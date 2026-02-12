@@ -1,0 +1,793 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Harmony Music Therapy - Therapeutic soundscapes for stress relief.">
+<title>Harmony | Music Therapy</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,600;1,400&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+  import { getAuth } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+  
+  const firebaseConfig = {
+    apiKey: "AIzaSyDb1hmgoJ-Ynep93t0x5efMr4PT3S5Ratc",
+    authDomain: "design-e-portfolio-735b8.firebaseapp.com",
+    projectId: "design-e-portfolio-735b8",
+    storageBucket: "design-e-portfolio-735b8.firebasestorage.app",
+    messagingSenderId: "1057882113508",
+    appId: "1:1057882113508:web:aad0d746bfdcd5e97bb3f1",
+    measurementId: "G-VL7K5DB9N3"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+</script>
+
+<style>
+    :root {
+        --bg-color: #F0F4F3;
+        --text-primary: #2F3E46;
+        --text-secondary: #52796F;
+        --accent-color: #84A98C;
+        --glass-bg: rgba(255, 255, 255, 0.65);
+        --glass-border: rgba(255, 255, 255, 0.8);
+        --shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
+        --btn-hover: #354F52;
+        --focus-ring: #2F3E46;
+        --warning-color: #D64545;
+    }
+
+    body.high-contrast {
+        --bg-color: #000000;
+        --text-primary: #FFFF00;
+        --text-secondary: #00FFFF;
+        --accent-color: #FFFFFF;
+        --glass-bg: #000000;
+        --glass-border: #FFFFFF;
+        --shadow: none;
+        --btn-hover: #FFFFFF;
+        --focus-ring: #FFFF00;
+        --warning-color: #FF0000;
+    }
+
+    * {
+        box-sizing: border-box;
+        transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+    }
+
+    body, html {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        min-height: 100vh;
+        background-color: var(--bg-color);
+        font-family: 'Montserrat', sans-serif;
+        color: var(--text-primary);
+        overflow-x: hidden;
+    }
+
+    button:focus-visible, a:focus-visible {
+        outline: 3px solid var(--focus-ring);
+        outline-offset: 2px;
+    }
+
+    #particle-canvas {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -1;
+    }
+
+    .navbar {
+        position: fixed;
+        top: 0;
+        width: 100%;
+        padding: 20px 40px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        z-index: 1000;
+        border-bottom: 1px solid var(--glass-border);
+    }
+    
+    body.high-contrast .navbar { 
+        background: #000; 
+        border-bottom: 2px solid white; 
+    }
+
+    .logo {
+        font-family: 'Cormorant Garamond', serif;
+        font-size: 1.8rem;
+        font-weight: 600;
+        letter-spacing: 1px;
+        color: var(--text-primary);
+        text-decoration: none;
+    }
+
+    .nav-links {
+        display: flex;
+        gap: 30px;
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
+
+    .nav-links a {
+        text-decoration: none;
+        color: var(--text-secondary);
+        font-weight: 500;
+        font-size: 0.95rem;
+        position: relative;
+    }
+
+    .nav-links a::after {
+        content: '';
+        position: absolute;
+        width: 0;
+        height: 2px;
+        bottom: -5px;
+        left: 0;
+        background-color: var(--accent-color);
+        transition: width 0.3s;
+    }
+
+    .nav-links a:hover::after { width: 100%; }
+
+    .accessibility-btn {
+        background: transparent;
+        border: 2px solid var(--text-secondary);
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--text-primary);
+        font-size: 1.2rem;
+    }
+
+    .accessibility-btn:hover {
+        background: var(--accent-color);
+        border-color: var(--accent-color);
+        color: white;
+    }
+
+    .main-container {
+        padding: 140px 8% 80px 8%;
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+
+    .page-header {
+        text-align: center;
+        margin-bottom: 60px;
+    }
+
+    .page-header h1 {
+        font-family: 'Cormorant Garamond', serif;
+        font-size: 4rem;
+        margin: 0 0 10px 0;
+        font-weight: 300;
+        line-height: 1.1;
+    }
+
+    .page-header p {
+        font-size: 1.1rem;
+        color: var(--text-secondary);
+        line-height: 1.6;
+        max-width: 700px;
+        margin: 0 auto;
+    }
+
+    .recommendation-banner {
+        background: linear-gradient(135deg, var(--accent-color), #52796F);
+        padding: 40px;
+        border-radius: 20px;
+        margin-bottom: 60px;
+        text-align: center;
+        color: white;
+        box-shadow: var(--shadow);
+        display: none;
+    }
+
+    .recommendation-banner.active {
+        display: block;
+        animation: slideDown 0.5s ease;
+    }
+
+    @keyframes slideDown {
+        from { opacity: 0; transform: translateY(-20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    body.high-contrast .recommendation-banner {
+        background: #FFFF00;
+        color: #000;
+        border: 3px solid white;
+    }
+
+    .recommendation-banner h2 {
+        font-family: 'Cormorant Garamond', serif;
+        font-size: 2rem;
+        margin: 0 0 10px 0;
+        font-weight: 300;
+    }
+
+    .rec-badge {
+        display: inline-block;
+        background: rgba(255, 255, 255, 0.2);
+        padding: 8px 16px;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        margin-bottom: 15px;
+        font-weight: 600;
+    }
+
+    body.high-contrast .rec-badge {
+        background: #000;
+        color: #FFFF00;
+    }
+
+    .music-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+        gap: 40px;
+        margin-bottom: 60px;
+    }
+
+    .music-card {
+        background: var(--glass-bg);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border: 1px solid var(--glass-border);
+        padding: 35px;
+        border-radius: 24px;
+        box-shadow: var(--shadow);
+        transition: all 0.3s ease;
+        animation: fadeInUp 0.6s ease-out;
+    }
+
+    .music-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 12px 40px rgba(31, 38, 135, 0.15);
+    }
+
+    .music-card.recommended {
+        border: 3px solid var(--accent-color);
+        background: linear-gradient(135deg, rgba(132, 169, 140, 0.1), rgba(255, 255, 255, 0.65));
+    }
+
+    body.high-contrast .music-card {
+        background: #000;
+        border: 2px solid white;
+    }
+
+    body.high-contrast .music-card.recommended {
+        border: 3px solid #FFFF00;
+    }
+
+    @keyframes fadeInUp {
+        from { opacity: 0; transform: translateY(30px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .music-card:nth-child(1) { animation-delay: 0.1s; }
+    .music-card:nth-child(2) { animation-delay: 0.2s; }
+    .music-card:nth-child(3) { animation-delay: 0.3s; }
+    .music-card:nth-child(4) { animation-delay: 0.4s; }
+
+    .card-header {
+        margin-bottom: 20px;
+    }
+
+    .card-title {
+        font-family: 'Cormorant Garamond', serif;
+        font-size: 2rem;
+        margin: 0 0 8px 0;
+        color: var(--text-primary);
+        font-weight: 600;
+    }
+
+    .card-subtitle {
+        font-size: 0.9rem;
+        color: var(--text-secondary);
+        margin: 0 0 15px 0;
+    }
+
+    .card-tags {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin-bottom: 20px;
+    }
+
+    .tag {
+        background: var(--accent-color);
+        color: white;
+        padding: 6px 14px;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 600;
+    }
+
+    body.high-contrast .tag {
+        background: #FFFF00;
+        color: #000;
+    }
+
+    .card-description {
+        font-size: 0.95rem;
+        line-height: 1.7;
+        color: var(--text-primary);
+        margin-bottom: 25px;
+    }
+
+    .audio-player {
+        width: 100%;
+        margin-bottom: 15px;
+        border-radius: 12px;
+        outline: none;
+    }
+
+    audio::-webkit-media-controls-panel {
+        background-color: var(--bg-color);
+    }
+
+    .download-btn {
+        display: inline-block;
+        padding: 14px 28px;
+        background: var(--text-primary);
+        color: white;
+        border: none;
+        border-radius: 50px;
+        font-size: 0.9rem;
+        font-weight: 500;
+        cursor: pointer;
+        text-decoration: none;
+        transition: all 0.2s;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+
+    .download-btn:hover {
+        background: var(--btn-hover);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+    }
+
+    body.high-contrast .download-btn {
+        background: #333;
+        border: 2px solid #FFFF00;
+        color: #FFFF00;
+    }
+
+    .info-section {
+        background: var(--glass-bg);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border: 1px solid var(--glass-border);
+        padding: 50px;
+        border-radius: 24px;
+        margin-top: 60px;
+        box-shadow: var(--shadow);
+    }
+
+    body.high-contrast .info-section {
+        background: #000;
+        border: 2px solid white;
+    }
+
+    .info-section h2 {
+        font-family: 'Cormorant Garamond', serif;
+        font-size: 2.5rem;
+        margin: 0 0 25px 0;
+        color: var(--text-primary);
+        font-weight: 600;
+    }
+
+    .info-section p {
+        line-height: 1.8;
+        color: var(--text-primary);
+        margin-bottom: 20px;
+        font-size: 1.05rem;
+    }
+
+    .info-section strong {
+        color: var(--accent-color);
+        font-weight: 600;
+    }
+
+    body.high-contrast .info-section strong {
+        color: #00FFFF;
+    }
+    
+    .crisis-footer {
+        background: var(--glass-bg);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border: 1px solid var(--glass-border);
+        padding: 40px;
+        border-radius: 24px;
+        margin-top: 40px;
+        text-align: center;
+        box-shadow: var(--shadow);
+    }
+
+    body.high-contrast .crisis-footer {
+        background: #000;
+        border: 2px solid white;
+    }
+
+    .crisis-footer h3 {
+        font-family: 'Cormorant Garamond', serif;
+        font-size: 1.8rem;
+        margin: 0 0 15px 0;
+        color: var(--text-primary);
+    }
+
+    .crisis-footer p {
+        color: var(--text-secondary);
+        margin-bottom: 25px;
+    }
+
+    .crisis-links {
+        display: flex;
+        gap: 15px;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .crisis-btn {
+        padding: 14px 28px;
+        background: transparent;
+        border: 2px solid var(--text-primary);
+        color: var(--text-primary);
+        border-radius: 50px;
+        font-size: 0.9rem;
+        font-weight: 600;
+        cursor: pointer;
+        text-decoration: none;
+        transition: all 0.2s;
+    }
+
+    .crisis-btn:hover {
+        background: var(--text-primary);
+        color: white;
+        transform: translateY(-2px);
+    }
+
+    body.high-contrast .crisis-btn {
+        border-color: #FFFF00;
+        color: #FFFF00;
+    }
+
+    body.high-contrast .crisis-btn:hover {
+        background: #FFFF00;
+        color: #000;
+    }
+
+    @media (max-width: 768px) {
+        .navbar { padding: 15px 20px; }
+        .nav-links { display: none; }
+        .main-container { padding: 120px 5% 60px 5%; }
+        .page-header h1 { font-size: 2.8rem; }
+        .music-grid { grid-template-columns: 1fr; }
+        .recommendation-banner { padding: 30px 20px; }
+        .info-section { padding: 35px 25px; }
+    }
+</style>
+</head>
+<body>
+
+    <canvas id="particle-canvas" aria-hidden="true"></canvas>
+
+    <nav class="navbar" role="navigation" aria-label="Main Navigation">
+        <a href="dashboard.html" class="logo">Harmony.</a>
+        <ul class="nav-links">
+            <li><a href="dashboard.html">Home</a></li>
+            <li><a href="dashboard.html#about-section">About</a></li>
+            <li><a href="music.html">Music Therapy</a></li>
+            <li><a href="journal.html">Journaling</a></li>
+        </ul>
+        <button class="accessibility-btn" id="contrast-toggle" aria-label="Toggle High Contrast Mode" title="High Contrast Mode">
+            <span aria-hidden="true">◐</span>
+        </button>   
+    </nav>
+
+    <main class="main-container" id="main-content">
+        <div class="page-header">
+            <h1>Sound Healing</h1>
+            <p>Science-backed frequencies designed to calm your nervous system and restore balance.</p>
+        </div>
+
+        <div class="recommendation-banner" id="recommendationBanner">
+            <span class="rec-badge">✨ RECOMMENDED FOR YOU</span>
+            <h2 id="recTrackName">432Hz Grounding Tone</h2>
+            <p id="recDescription">Based on your check-in, this frequency will help ground you.</p>
+        </div>
+
+        <div class="music-grid">
+            
+            <div class="music-card" data-track="432Hz Grounding Tone">
+                <div class="card-header">
+                    <h3 class="card-title">432Hz Grounding Tone</h3>
+                    <p class="card-subtitle">Deep Root Frequency</p>
+                </div>
+                <div class="card-tags">
+                    <span class="tag">Anxiety Relief</span>
+                    <span class="tag">Panic Attack</span>
+                    <span class="tag">Grounding</span>
+                </div>
+                <p class="card-description">
+                    The 432Hz frequency is known as the "natural tuning" that resonates with the universe. 
+                    Perfect for moments of high anxiety or panic attacks. This tone helps anchor you back to the present.
+                </p>
+                <audio class="audio-player" controls aria-label="432Hz Grounding Tone audio player">
+                    <source src="432meditation.mp3" type="audio/mpeg">
+                    Your browser does not support the audio element.
+                </audio>
+                <a href="432meditation.mp3" download class="download-btn" aria-label="Download 432Hz Grounding Tone">
+                    Download Track
+                </a>
+            </div>
+
+            <div class="music-card" data-track="Delta Waves (Deep Rest)">
+                <div class="card-header">
+                    <h3 class="card-title">Delta Waves</h3>
+                    <p class="card-subtitle">0.5-4Hz Deep Rest</p>
+                </div>
+                <div class="card-tags">
+                    <span class="tag">Mental Exhaustion</span>
+                    <span class="tag">Burnout</span>
+                    <span class="tag">Sleep Aid</span>
+                </div>
+                <p class="card-description">
+                    Delta waves are the slowest brain waves associated with deep, dreamless sleep and healing. 
+                    Use this when you're completely mentally exhausted or experiencing burnout. Allow your mind to rest.
+                </p>
+                <audio class="audio-player" controls aria-label="Delta Waves audio player">
+                    <source src="binaurale.mp3" type="audio/mpeg">
+                    Your browser does not support the audio element.
+                </audio>
+                <a href="binaurale.mp3" download class="download-btn" aria-label="Download Delta Waves">
+                    Download Track
+                </a>
+            </div>
+
+            <div class="music-card" data-track="Lofi & Pink Noise">
+                <div class="card-header">
+                    <h3 class="card-title">Lofi & Pink Noise</h3>
+                    <p class="card-subtitle">Focus Enhancement</p>
+                </div>
+                <div class="card-tags">
+                    <span class="tag">Focus</span>
+                    <span class="tag">Study</span>
+                    <span class="tag">Concentration</span>
+                </div>
+                <p class="card-description">
+                    Pink noise combined with lo-fi beats masks distracting sounds and helps maintain focus. 
+                    Ideal for when you feel foggy and struggle to concentrate on assignments or exam prep.
+                </p>
+                <audio class="audio-player" controls aria-label="Lofi and Pink Noise audio player">
+                    <source src="lofi.mp3" type="audio/mpeg">
+                    Your browser does not support the audio element.
+                </audio>
+                <a href="lofi.mp3" download class="download-btn" aria-label="Download Lofi & Pink Noise">
+                    Download Track
+                </a>
+            </div>
+
+            <div class="music-card" data-track="Binaural Beats (Alpha Waves)">
+                <div class="card-header">
+                    <h3 class="card-title">Binaural Beats</h3>
+                    <p class="card-subtitle">8-13Hz Alpha Waves</p>
+                </div>
+                <div class="card-tags">
+                    <span class="tag">Relaxation</span>
+                    <span class="tag">Meditation</span>
+                    <span class="tag">Stress Relief</span>
+                </div>
+                <p class="card-description">
+                    Alpha waves promote relaxed alertness and reduce stress. Use headphones for maximum effect. 
+                    This track helps calm racing thoughts while maintaining mental clarity.
+                </p>
+                <audio class="audio-player" controls aria-label="Binaural Beats Alpha Waves audio player">
+                    <source src="simplemeditation.mp3" type="audio/mpeg">
+                    Your browser does not support the audio element.
+                </audio>
+                <a href="simplemeditation.mp3" download class="download-btn" aria-label="Download Binaural Beats">
+                    Download Track
+                </a>
+            </div>
+
+        </div>
+
+        <div class="info-section">
+            <h2>The Science Behind Sound Therapy</h2>
+            <p>
+                <strong>Psychoacoustics</strong> is the scientific study of how sound affects the brain and nervous system. 
+                Each frequency in our library has been carefully selected based on research into brainwave entrainment.
+            </p>
+            <p>
+                <strong>How it works:</strong> When you listen to specific frequencies, your brain naturally synchronizes its 
+                electrical activity to match. This process, called "frequency following response," can shift you from 
+                high-stress beta waves to calm alpha or theta states.
+            </p>
+            <p>
+                <strong>Best Practices:</strong> Use headphones for binaural beats. Listen for at least 10-15 minutes. 
+                Find a quiet space where you won't be interrupted. Close your eyes and focus on your breathing while the music plays.
+            </p>
+        </div>
+
+        <div class="crisis-footer">
+            <h3>Need someone to talk to?</h3>
+            <p>You're not alone. Help is available 24/7.</p>
+            <div class="crisis-links">
+                <a href="tel:988" class="crisis-btn">988 Lifeline</a>
+                <a href="https://www.crisistextline.org" target="_blank" rel="noopener" class="crisis-btn">Crisis Text Line</a>
+                <a href="https://findahelpline.com" target="_blank" rel="noopener" class="crisis-btn">Find Local Help</a>
+            </div>
+        </div>
+    </main>
+
+<script>
+    const contrastBtn = document.getElementById('contrast-toggle');
+    
+    if (localStorage.getItem('highContrast') === 'true') {
+        document.body.classList.add('high-contrast');
+    }
+    
+    contrastBtn.addEventListener('click', () => {
+        document.body.classList.toggle('high-contrast');
+        localStorage.setItem('highContrast', document.body.classList.contains('high-contrast'));
+    });
+
+    window.addEventListener('load', () => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const recommendedTrack = urlParams.get('track');
+        
+        if (recommendedTrack) {
+            const banner = document.getElementById('recommendationBanner');
+            const trackName = document.getElementById('recTrackName');
+            const description = document.getElementById('recDescription');
+            
+            banner.classList.add('active');
+            trackName.textContent = recommendedTrack;
+            
+            const descriptions = {
+                '432Hz Grounding Tone': 'Based on your check-in, this frequency will help ground you and ease anxiety.',
+                'Delta Waves (Deep Rest)': 'Your mind needs deep rest. This will help you recover from mental exhaustion.',
+                'Lofi & Pink Noise': 'This will help clear the fog and sharpen your focus for your tasks.',
+                'Binaural Beats (Alpha Waves)': 'This will help calm your racing thoughts and bring you back to balance.'
+            };
+            
+            description.textContent = descriptions[recommendedTrack] || 'This track is recommended for your current state.';
+            
+            const cards = document.querySelectorAll('.music-card');
+            cards.forEach(card => {
+                if (card.dataset.track === recommendedTrack) {
+                    card.classList.add('recommended');
+                    setTimeout(() => {
+                        card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }, 500);
+                }
+            });
+        }
+    });
+
+    const canvas = document.getElementById('particle-canvas');
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    let particlesArray;
+
+    window.addEventListener('resize', () => {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        init();
+    });
+
+    const mouse = { x: null, y: null, radius: 150 };
+
+    window.addEventListener('mousemove', (event) => {
+        mouse.x = event.x;
+        mouse.y = event.y;
+    });
+
+    class Particle {
+        constructor(x, y, directionX, directionY, size, color) {
+            this.x = x;
+            this.y = y;
+            this.directionX = directionX;
+            this.directionY = directionY;
+            this.size = size;
+            this.color = color;
+        }
+        draw() {
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2, false);
+            ctx.fillStyle = document.body.classList.contains('high-contrast') ? '#FFFF00' : '#84A98C';
+            ctx.fill();
+        }
+        update() {
+            if (this.x > canvas.width || this.x < 0) this.directionX = -this.directionX;
+            if (this.y > canvas.height || this.y < 0) this.directionY = -this.directionY;
+
+            let dx = mouse.x - this.x;
+            let dy = mouse.y - this.y;
+            let distance = Math.sqrt(dx*dx + dy*dy);
+
+            if (distance < mouse.radius + this.size) {
+                if (mouse.x < this.x && this.x < canvas.width - this.size * 10) this.x += 3;
+                if (mouse.x > this.x && this.x > this.size * 10) this.x -= 3;
+                if (mouse.y < this.y && this.y < canvas.height - this.size * 10) this.y += 3;
+                if (mouse.y > this.y && this.y > this.size * 10) this.y -= 3;
+            }
+            
+            this.x += this.directionX;
+            this.y += this.directionY;
+            this.draw();
+        }
+    }
+
+    function init() {
+        particlesArray = [];
+        let numberOfParticles = (canvas.height * canvas.width) / 9000;
+        for (let i = 0; i < numberOfParticles; i++) {
+            let size = (Math.random() * 3) + 1;
+            let x = (Math.random() * ((innerWidth - size * 2) - (size * 2)) + size * 2);
+            let y = (Math.random() * ((innerHeight - size * 2) - (size * 2)) + size * 2);
+            let directionX = (Math.random() * 0.5) - 0.25; 
+            let directionY = (Math.random() * 0.5) - 0.25;
+            let color = '#84A98C';
+            particlesArray.push(new Particle(x, y, directionX, directionY, size, color));
+        }
+    }
+
+    function animate() {
+        requestAnimationFrame(animate);
+        ctx.clearRect(0, 0, innerWidth, innerHeight);
+        
+        for (let i = 0; i < particlesArray.length; i++) {
+            particlesArray[i].update();
+        }
+        connect();
+    }
+
+    function connect() {
+        let opacityValue = 1;
+        for (let a = 0; a < particlesArray.length; a++) {
+            for (let b = a; b < particlesArray.length; b++) {
+                let distance = ((particlesArray[a].x - particlesArray[b].x) * (particlesArray[a].x - particlesArray[b].x)) + 
+                               ((particlesArray[a].y - particlesArray[b].y) * (particlesArray[a].y - particlesArray[b].y));
+                if (distance < (canvas.width/7) * (canvas.height/7)) {
+                    opacityValue = 1 - (distance / 20000);
+                    ctx.strokeStyle = document.body.classList.contains('high-contrast') 
+                        ? 'rgba(255, 255, 0,' + opacityValue + ')' 
+                        : 'rgba(132, 169, 140,' + opacityValue + ')';
+                    ctx.lineWidth = 1;
+                    ctx.beginPath();
+                    ctx.moveTo(particlesArray[a].x, particlesArray[a].y);
+                    ctx.lineTo(particlesArray[b].x, particlesArray[b].y);
+                    ctx.stroke();
+                }
+            }
+        }
+    }
+
+    init();
+    animate();
+</script>
+</body>
+</html>

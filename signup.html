@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Music Therapy | Join the Harmony</title>
+    
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+        // Your specific Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyDb1hmgoJ-Ynep93t0x5efMr4PT3S5Ratc",
+            authDomain: "design-e-portfolio-735b8.firebaseapp.com",
+            projectId: "design-e-portfolio-735b8",
+            storageBucket: "design-e-portfolio-735b8.firebasestorage.app",
+            messagingSenderId: "1057882113508",
+            appId: "1:1057882113508:web:aad0d746bfdcd5e97bb3f1",
+            measurementId: "G-VL7K5DB9N3"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        // Function to handle the Sign Up process
+        async function handleSignUp() {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const errorElement = document.getElementById('error-message');
+            const successPopup = document.getElementById('success-notification');
+
+            // Reset Error
+            errorElement.innerText = "";
+
+            // Validation
+            if (password !== confirmPassword) {
+                errorElement.innerText = "Passwords do not match. Please try again.";
+                return;
+            }
+
+            try {
+                // Firebase Create User
+                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                console.log("User created:", userCredential.user);
+
+                // Show the calming success popup
+                successPopup.classList.add('show-notification');
+
+                // Wait 3 seconds then redirect
+                setTimeout(() => {
+                    window.location.href = "dashboard.html"; 
+                }, 3000);
+
+            } catch (error) {
+                errorElement.innerText = error.message;
+                console.error("Signup error:", error);
+            }
+        }
+
+        // Attach function to the window object so the button can see it
+        window.handleSignUp = handleSignUp;
+    </script>
+
+    <style>
+        /* --- 1. Global Reset & Aesthetics --- */
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden; /* Prevent scroll to keep the calming vibe */
+            background-color: #fdfbfb;
+        }
+
+        /* --- 2. Dynamic Background & Mouse Tracking Area --- */
+        .page-wrapper {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Mouse Follower Glow */
+        #cursor-glow {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0) 70%);
+            border-radius: 50%;
+            pointer-events: none; /* Allows clicks to pass through */
+            transform: translate(-50%, -50%);
+            z-index: 1;
+            transition: transform 0.1s ease-out;
+        }
+
+        /* --- 3. The Signup Container --- */
+        .signup-container {
+            position: relative;
+            z-index: 10;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border: 1.5px solid rgba(255, 255, 255, 0.4);
+            padding: 50px 60px;
+            border-radius: 40px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+            width: 100%;
+            max-width: 420px;
+            text-align: center;
+            animation: cardEntrance 1s ease-out;
+        }
+
+        h1 {
+            color: white;
+            font-family: 'Georgia', serif;
+            font-style: italic;
+            font-weight: 300;
+            margin-bottom: 30px;
+            letter-spacing: 2px;
+        }
+
+        /* --- 4. Defined Input Boxes --- */
+        .input-box {
+            position: relative;
+            margin-bottom: 25px;
+            width: 100%;
+        }
+
+        .input-box input {
+            width: 100%;
+            padding: 15px 20px;
+            background: rgba(255, 255, 255, 0.9); /* More opaque for visibility */
+            border: 2px solid transparent;
+            border-radius: 15px;
+            outline: none;
+            font-size: 1rem;
+            color: #333;
+            box-sizing: border-box; /* Crucial for sizing */
+            transition: all 0.3s ease;
+        }
+
+        .input-box input:focus {
+            border-color: #23a6d5;
+            background: #fff;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+
+        .input-box label {
+            display: block;
+            text-align: left;
+            color: white;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 8px;
+            margin-left: 5px;
+        }
+
+        /* --- 5. Action Button --- */
+        .signup-btn {
+            width: 100%;
+            padding: 16px;
+            border: none;
+            border-radius: 50px;
+            background: white;
+            color: #e73c7e;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            margin-top: 10px;
+        }
+
+        .signup-btn:hover {
+            transform: scale(1.05) rotate(1deg);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+            background: #fdfbfb;
+        }
+
+        /* --- 6. Success Popup --- */
+        .success-notification {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.98);
+            border-radius: 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.6s ease;
+            z-index: 50;
+        }
+
+        .show-notification {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* --- 7. Hyperlink to Login --- */
+        .login-link {
+            margin-top: 25px;
+            color: white;
+            font-size: 0.85rem;
+        }
+
+        .login-link a {
+            color: white;
+            font-weight: bold;
+            text-decoration: underline;
+            transition: opacity 0.3s;
+        }
+
+        .login-link a:hover {
+            opacity: 0.7;
+        }
+
+        #error-message {
+            color: #ffcccc;
+            font-size: 0.8rem;
+            margin-top: 15px;
+            min-height: 20px;
+        }
+
+        /* --- 8. Keyframes --- */
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        @keyframes cardEntrance {
+            from { opacity: 0; transform: scale(0.9) translateY(20px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        /* Loading Spinner for the popup */
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #e73c7e;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin-top: 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="page-wrapper" id="page-wrapper">
+        <div id="cursor-glow"></div>
+
+        <main class="signup-container">
+            <div id="success-notification" class="success-notification">
+                <h2 style="color: #e73c7e; font-family: 'Georgia', serif;">Saved</h2>
+                <p style="color: #666;">Logging you in now...</p>
+                <div class="spinner"></div>
+            </div>
+
+            <h1>Create Your Account</h1>
+            
+            <div class="input-box">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" placeholder="e.g. serenity@example.com" required>
+            </div>
+
+            <div class="input-box">
+                <label for="password">Password</label>
+                <input type="password" id="password" placeholder="••••••••" required>
+            </div>
+
+            <div class="input-box">
+                <label for="confirmPassword">Confirm Password</label>
+                <input type="password" id="confirmPassword" placeholder="••••••••" required>
+            </div>
+
+            <button type="button" class="signup-btn" onclick="handleSignUp()">Begin Journey</button>
+
+            <div id="error-message"></div>
+
+            <p class="login-link">
+                Already have an account? <a href="login.html">Log in</a>
+            </p>
+        </main>
+    </div>
+
+    <script>
+        // Smooth Mouse Tracking Logic
+        const glow = document.getElementById('cursor-glow');
+        window.addEventListener('mousemove', (e) => {
+            const x = e.clientX;
+            const y = e.clientY;
+            // Use requestAnimationFrame for smoother performance
+            requestAnimationFrame(() => {
+                glow.style.left = x + 'px';
+                glow.style.top = y + 'px';
+            });
+        });
+    </script>
+
+</body>
+</html>

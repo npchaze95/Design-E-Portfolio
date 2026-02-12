@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Music Therapy | Welcome Back</title>
+    
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+        // Your specific Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyDb1hmgoJ-Ynep93t0x5efMr4PT3S5Ratc",
+            authDomain: "design-e-portfolio-735b8.firebaseapp.com",
+            projectId: "design-e-portfolio-735b8",
+            storageBucket: "design-e-portfolio-735b8.firebasestorage.app",
+            messagingSenderId: "1057882113508",
+            appId: "1:1057882113508:web:aad0d746bfdcd5e97bb3f1",
+            measurementId: "G-VL7K5DB9N3"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        // Function to handle Login
+        async function handleLogin() {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const errorModal = document.getElementById('error-modal');
+
+            try {
+                // Attempting to log in
+                const userCredential = await signInWithEmailAndPassword(auth, email, password);
+                console.log("Login successful:", userCredential.user);
+                
+                // Redirect to a dashboard or main music therapy page
+                window.location.href = "dashboard.html"; 
+
+            } catch (error) {
+                console.error("Login Error:", error.code);
+                // If login fails (wrong password or no user), show our custom modal
+                showErrorModal();
+            }
+        }
+
+        function showErrorModal() {
+            const modal = document.getElementById('error-modal');
+            modal.classList.add('active');
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('error-modal');
+            modal.classList.remove('active');
+        }
+
+        // Exporting functions to window for global access
+        window.handleLogin = handleLogin;
+        window.closeModal = closeModal;
+    </script>
+
+    <style>
+        /* --- 1. Global Aesthetic & Reset --- */
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden;
+            background-color: #fdfbfb;
+        }
+
+        /* --- 2. Dynamic Background Area --- */
+        .page-wrapper {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Mouse Follower Glow */
+        #cursor-glow {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 450px;
+            height: 450px;
+            background: radial-gradient(circle, rgba(255,255,255,0.18) 0%, rgba(255,255,255,0) 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+            z-index: 1;
+            transition: transform 0.1s ease-out;
+        }
+
+        /* --- 3. The Login Glass Card --- */
+        .login-container {
+            position: relative;
+            z-index: 10;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border: 1.5px solid rgba(255, 255, 255, 0.4);
+            padding: 55px 65px;
+            border-radius: 40px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+            width: 100%;
+            max-width: 420px;
+            text-align: center;
+            animation: cardEntrance 1.2s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        h1 {
+            color: white;
+            font-family: 'Georgia', serif;
+            font-style: italic;
+            font-weight: 300;
+            margin-bottom: 35px;
+            letter-spacing: 2px;
+        }
+
+        /* --- 4. Form Inputs --- */
+        .input-box {
+            position: relative;
+            margin-bottom: 25px;
+            width: 100%;
+        }
+
+        .input-box label {
+            display: block;
+            text-align: left;
+            color: white;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 8px;
+            margin-left: 5px;
+        }
+
+        .input-box input {
+            width: 100%;
+            padding: 16px 20px;
+            background: rgba(255, 255, 255, 0.9);
+            border: 2px solid transparent;
+            border-radius: 18px;
+            outline: none;
+            font-size: 1rem;
+            color: #333;
+            box-sizing: border-box;
+            transition: all 0.3s ease;
+        }
+
+        .input-box input:focus {
+            border-color: #23a6d5;
+            background: #fff;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+
+        /* --- 5. Action Buttons --- */
+        .login-btn {
+            width: 100%;
+            padding: 18px;
+            border: none;
+            border-radius: 50px;
+            background: white;
+            color: #23a6d5; /* Different accent than signup for variety */
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            margin-top: 15px;
+        }
+
+        .login-btn:hover {
+            transform: scale(1.05) rotate(-1deg);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+            color: #e73c7e;
+        }
+
+        /* --- 6. Custom Error Modal (The Pop-up) --- */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.1); /* Subtle darkening */
+            backdrop-filter: blur(8px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.4s ease;
+            z-index: 100;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-card {
+            background: white;
+            padding: 40px;
+            border-radius: 35px;
+            max-width: 400px;
+            width: 85%;
+            text-align: center;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.2);
+            transform: scale(0.8);
+            transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .modal-overlay.active .modal-card {
+            transform: scale(1);
+        }
+
+        .modal-card h2 {
+            font-family: 'Georgia', serif;
+            color: #e73c7e;
+            margin-bottom: 15px;
+        }
+
+        .modal-card p {
+            color: #555;
+            line-height: 1.6;
+            margin-bottom: 25px;
+        }
+
+        .modal-btn {
+            display: block;
+            width: 100%;
+            padding: 14px;
+            margin-bottom: 10px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 0.8rem;
+            transition: 0.3s;
+            cursor: pointer;
+            border: none;
+        }
+
+        .btn-redirect {
+            background: #e73c7e;
+            color: white;
+        }
+
+        .btn-redirect:hover {
+            background: #ee7752;
+            transform: translateY(-2px);
+        }
+
+        .btn-close {
+            background: #f0f0f0;
+            color: #777;
+        }
+
+        .btn-close:hover {
+            background: #e0e0e0;
+        }
+
+        /* --- 7. Animations & Footer --- */
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        @keyframes cardEntrance {
+            from { opacity: 0; transform: translateY(40px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .signup-link {
+            margin-top: 25px;
+            color: white;
+            font-size: 0.85rem;
+        }
+
+        .signup-link a {
+            color: white;
+            font-weight: bold;
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="page-wrapper">
+        <div id="cursor-glow"></div>
+
+        <main class="login-container">
+            <h1>Welcome Back</h1>
+            
+            <div class="input-box">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" placeholder="Enter your email" required>
+            </div>
+
+            <div class="input-box">
+                <label for="password">Password</label>
+                <input type="password" id="password" placeholder="Enter your password" required>
+            </div>
+
+            <button type="button" class="login-btn" onclick="handleLogin()">Resume Journey</button>
+
+            <p class="signup-link">
+                Don't have an account? <a href="signup.html">Sign up</a>
+            </p>
+        </main>
+    </div>
+
+    <div class="modal-overlay" id="error-modal">
+        <div class="modal-card">
+            <h2>Something's not right</h2>
+            <p>Don't have an account? Click below to sign up!</p>
+            
+            <a href="signup.html" class="modal-btn btn-redirect">Create Account</a>
+            <button class="modal-btn btn-close" onclick="closeModal()">Try Again</button>
+        </div>
+    </div>
+
+    <script>
+        // Smooth Mouse Tracking
+        const glow = document.getElementById('cursor-glow');
+        window.addEventListener('mousemove', (e) => {
+            const x = e.clientX;
+            const y = e.clientY;
+            requestAnimationFrame(() => {
+                glow.style.left = x + 'px';
+                glow.style.top = y + 'px';
+            });
+        });
+    </script>
+
+</body>
+</html>

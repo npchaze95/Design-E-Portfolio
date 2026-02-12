@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Music Therapy | Serene Entrance</title>
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+  import { getAuth } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyDb1hmgoJ-Ynep93t0x5efMr4PT3S5Ratc",
+    authDomain: "design-e-portfolio-735b8.firebaseapp.com",
+    projectId: "design-e-portfolio-735b8",
+    storageBucket: "design-e-portfolio-735b8.firebasestorage.app",
+    messagingSenderId: "1057882113508",
+    appId: "1:1057882113508:web:aad0d746bfdcd5e97bb3f1",
+    measurementId: "G-VL7K5DB9N3"
+  };
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  console.log("Firebase initialized");
+</script>
+
+<style>
+    body, html {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        height: 100%;
+        background-color: #fdfbfb; 
+        font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        overflow-x: hidden;
+    }
+
+    
+    .header {
+        position: relative;
+        text-align: center;
+        background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+        background-size: 400% 400%;
+        animation: gradientShift 15s ease infinite;
+        height: 85vh;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        overflow: hidden;
+    }
+    .inner-header {
+        padding: 60px 80px;
+        border-radius: 40px;
+        background: rgba(255, 255, 255, 0.22); 
+        backdrop-filter: blur(18px); 
+        -webkit-backdrop-filter: blur(18px);
+        border: 1px solid rgba(255, 255, 255, 0.4);
+        box-shadow: 0 20px 45px rgba(0, 0, 0, 0.1);
+        z-index: 10;
+        animation: floating 6s ease-in-out infinite;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        max-width: 650px;
+        transition: all 0.5s ease;
+    }
+    h1 {
+        font-family: 'Georgia', serif;
+        font-weight: 300;
+        font-style: italic;
+        letter-spacing: 6px;
+        color: white;
+        font-size: 3.8rem;
+        margin: 0;
+        text-shadow: 0 4px 15px rgba(0,0,0,0.15);
+    }
+    p {
+        color: white;
+        text-transform: uppercase;
+        letter-spacing: 7px;
+        font-size: 0.85rem;
+        margin-top: 25px;
+        margin-bottom: 45px;
+        opacity: 0.9;
+    }
+    .auth-container {
+        display: flex;
+        gap: 30px;
+        justify-content: center;
+    }
+    .btn {
+        text-decoration: none;
+        padding: 18px 45px;
+        border-radius: 50px;
+        font-family: 'Helvetica Neue', sans-serif;
+        font-weight: 600;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        font-size: 0.85rem;
+        color: white;
+        background: rgba(255, 255, 255, 0.25);
+        border: 1.5px solid rgba(255, 255, 255, 0.5);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        
+        transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        cursor: pointer;
+        outline: none;
+    }
+
+    .btn:hover {
+        transform: scale(1.18);
+        background: rgba(255, 255, 255, 0.95);
+        color: #e73c7e; 
+        border-color: white;
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+        animation: exciteRotate 0.8s ease-in-out infinite alternate;
+    }
+
+    .btn:focus {
+        background: rgba(255, 255, 255, 1);
+        color: #23a6d5;
+        box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.5);
+    }
+
+    
+    @keyframes exciteRotate {
+        0% { transform: scale(1.18) rotate(-4deg); }
+        100% { transform: scale(1.18) rotate(4deg); }
+    }
+
+    @keyframes gradientShift {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+    }
+
+    @keyframes floating {
+        0% { transform: translateY(0px) rotate(0deg); }
+        50% { transform: translateY(-18px) rotate(0.8deg); }
+        100% { transform: translateY(0px) rotate(0deg); }
+    }
+
+    @keyframes move-forever {
+        0% { transform: translate3d(-90px, 0, 0); }
+        100% { transform: translate3d(85px, 0, 0); }
+    }
+
+    .waves {
+        position: absolute;
+        bottom: 0;
+        width: 100%;
+        height: 38vh;
+        min-height: 200px;
+    }
+
+    .parallax > use {
+        animation: move-forever 25s cubic-bezier(.55, .5, .45, .5) infinite;
+    }
+    .parallax > use:nth-child(1) { animation-delay: -2s; animation-duration: 9s; fill: rgba(255, 255, 255, 0.3); }
+    .parallax > use:nth-child(2) { animation-delay: -3s; animation-duration: 12s; fill: rgba(255, 255, 255, 0.5); }
+    .parallax > use:nth-child(3) { animation-delay: -4s; animation-duration: 15s; fill: rgba(255, 255, 255, 0.2); }
+    .parallax > use:nth-child(4) { animation-delay: -5s; animation-duration: 22s; fill: #fdfbfb; }
+    @media (max-width: 768px) {
+        h1 { font-size: 2.2rem; }
+        .inner-header { padding: 40px 25px; width: 85%; }
+        .auth-container { flex-direction: column; width: 100%; gap: 15px; }
+        .btn { width: 100%; text-align: center; box-sizing: border-box; }
+    }
+</style>
+</head>
+<body>
+
+    <section class="header" role="banner">
+        
+        <div class="inner-header">
+            <h1>Music Therapy</h1>
+            <p>A therapeutic journey through sound</p>
+            
+            <div class="auth-container">
+                <a href="login.html" class="btn" aria-label="Navigate to Login page">Login</a>
+                <a href="signup.html" class="btn" aria-label="Navigate to Sign Up page">Sign Up</a>
+            </div>
+        </div>
+
+        <svg class="waves" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+        viewBox="0 24 150 28" preserveAspectRatio="none" shape-rendering="auto">
+            <defs>
+                <path id="gentle-wave" d="M-160 44c30 0 58-18 88-18s 58 18 88 18 58-18 88-18 58 18 88 18 v44h-352z" />
+            </defs>
+            <g class="parallax">
+                <use xlink:href="#gentle-wave" x="48" y="0" />
+                <use xlink:href="#gentle-wave" x="48" y="3" />
+                <use xlink:href="#gentle-wave" x="48" y="5" />
+                <use xlink:href="#gentle-wave" x="48" y="7" />
+            </g>
+        </svg>
+
+    </section>
+
+</body>
+</html>

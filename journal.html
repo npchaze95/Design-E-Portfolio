@@ -1,0 +1,1203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Harmony Journal - A safe space to track your thoughts and feelings.">
+<title>Harmony | Journal</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,600;1,400&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+  import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, deleteDoc, doc, where, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+  
+  const firebaseConfig = {
+    apiKey: "AIzaSyDb1hmgoJ-Ynep93t0x5efMr4PT3S5Ratc",
+    authDomain: "design-e-portfolio-735b8.firebaseapp.com",
+    projectId: "design-e-portfolio-735b8",
+    storageBucket: "design-e-portfolio-735b8.firebasestorage.app",
+    messagingSenderId: "1057882113508",
+    appId: "1:1057882113508:web:aad0d746bfdcd5e97bb3f1",
+    measurementId: "G-VL7K5DB9N3"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+
+  // Make auth and db available globally
+  window.firebaseAuth = auth;
+  window.firebaseDB = db;
+  window.firestoreModules = { collection, addDoc, query, orderBy, onSnapshot, deleteDoc, doc, where, getDocs };
+</script>
+
+<style>
+    :root {
+        --bg-color: #F0F4F3;
+        --text-primary: #2F3E46;
+        --text-secondary: #52796F;
+        --accent-color: #84A98C;
+        --glass-bg: rgba(255, 255, 255, 0.65);
+        --glass-border: rgba(255, 255, 255, 0.8);
+        --shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
+        --btn-hover: #354F52;
+        --focus-ring: #2F3E46;
+        --warning-color: #D64545;
+    }
+
+    /* WCAG High Contrast Mode */
+    body.high-contrast {
+        --bg-color: #000000;
+        --text-primary: #FFFF00;
+        --text-secondary: #00FFFF;
+        --accent-color: #FFFFFF;
+        --glass-bg: #000000;
+        --glass-border: #FFFFFF;
+        --shadow: none;
+        --btn-hover: #FFFFFF;
+        --focus-ring: #FFFF00;
+        --warning-color: #FF0000;
+    }
+
+    * {
+        box-sizing: border-box;
+        transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+    }
+
+    body, html {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        min-height: 100vh;
+        background-color: var(--bg-color);
+        font-family: 'Montserrat', sans-serif;
+        color: var(--text-primary);
+        overflow-x: hidden;
+    }
+
+    button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible {
+        outline: 3px solid var(--focus-ring);
+        outline-offset: 2px;
+    }
+
+    .skip-link {
+        position: absolute;
+        top: -40px;
+        left: 0;
+        background: var(--text-primary);
+        color: white;
+        padding: 8px;
+        text-decoration: none;
+        z-index: 10000;
+    }
+    
+    .skip-link:focus {
+        top: 0;
+    }
+
+    /* Background Canvas */
+    #particle-canvas {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -1;
+    }
+
+    .navbar {
+        position: fixed;
+        top: 0;
+        width: 100%;
+        padding: 20px 40px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        z-index: 1000;
+        border-bottom: 1px solid var(--glass-border);
+    }
+    
+    body.high-contrast .navbar { 
+        background: #000; 
+        border-bottom: 2px solid white; 
+    }
+
+    .logo {
+        font-family: 'Cormorant Garamond', serif;
+        font-size: 1.8rem;
+        font-weight: 600;
+        letter-spacing: 1px;
+        color: var(--text-primary);
+        text-decoration: none;
+    }
+
+    .nav-links {
+        display: flex;
+        gap: 30px;
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
+
+    .nav-links a {
+        text-decoration: none;
+        color: var(--text-secondary);
+        font-weight: 500;
+        font-size: 0.95rem;
+        position: relative;
+    }
+
+    .nav-links a::after {
+        content: '';
+        position: absolute;
+        width: 0;
+        height: 2px;
+        bottom: -5px;
+        left: 0;
+        background-color: var(--accent-color);
+        transition: width 0.3s;
+    }
+
+    .nav-links a:hover::after { width: 100%; }
+
+    .accessibility-btn {
+        background: transparent;
+        border: 2px solid var(--text-secondary);
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--text-primary);
+        font-size: 1.2rem;
+    }
+
+    .accessibility-btn:hover {
+        background: var(--accent-color);
+        border-color: var(--accent-color);
+        color: white;
+    }
+
+    .escape-btn-floating {
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        background: var(--warning-color);
+        border: none;
+        color: white;
+        font-size: 0.75rem;
+        font-weight: 600;
+        padding: 12px 20px;
+        border-radius: 25px;
+        cursor: pointer;
+        z-index: 1500;
+        box-shadow: 0 4px 15px rgba(214, 69, 69, 0.3);
+        transition: all 0.2s;
+    }
+
+    .escape-btn-floating:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(214, 69, 69, 0.4);
+    }
+
+    body.high-contrast .escape-btn-floating {
+        background: #FF0000;
+        border: 2px solid #FFFF00;
+    }
+
+    .main-container {
+        padding: 140px 8% 80px 8%;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .page-header {
+        text-align: center;
+        margin-bottom: 60px;
+    }
+
+    .page-header h1 {
+        font-family: 'Cormorant Garamond', serif;
+        font-size: 4rem;
+        margin: 0 0 10px 0;
+        font-weight: 300;
+        line-height: 1.1;
+    }
+
+    .page-header p {
+        font-size: 1.1rem;
+        color: var(--text-secondary);
+        line-height: 1.6;
+        max-width: 700px;
+        margin: 0 auto;
+    }
+
+    .journal-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 30px;
+        margin-top: 40px;
+    }
+
+    .glass-section {
+        background: var(--glass-bg);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border: 1px solid var(--glass-border);
+        padding: 40px;
+        border-radius: 20px;
+        box-shadow: var(--shadow);
+    }
+
+    body.high-contrast .glass-section {
+        background: #000;
+        border: 2px solid white;
+    }
+
+    .section-title {
+        font-family: 'Cormorant Garamond', serif;
+        font-size: 2rem;
+        margin: 0 0 25px 0;
+        color: var(--text-primary);
+    }
+
+    .mood-selector {
+        display: flex;
+        gap: 15px;
+        flex-wrap: wrap;
+        margin-bottom: 25px;
+    }
+
+    .mood-btn {
+        flex: 1;
+        min-width: 120px;
+        padding: 15px 10px;
+        border: 2px solid #ddd;
+        border-radius: 12px;
+        background: #fafafa;
+        cursor: pointer;
+        font-size: 0.95rem;
+        font-weight: 500;
+        color: var(--text-primary);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 5px;
+        transition: all 0.2s;
+    }
+
+    .mood-btn .emoji {
+        font-size: 2rem;
+    }
+
+    .mood-btn:hover {
+        border-color: var(--accent-color);
+        background: var(--bg-color);
+        transform: translateY(-2px);
+    }
+
+    .mood-btn.selected {
+        border-color: var(--accent-color);
+        background: var(--accent-color);
+        color: white;
+    }
+
+    body.high-contrast .mood-btn {
+        background: #000;
+        border: 2px solid #00FFFF;
+        color: #FFFF00;
+    }
+
+    body.high-contrast .mood-btn.selected {
+        background: #FFFF00;
+        color: #000;
+    }
+
+    .journal-textarea {
+        width: 100%;
+        min-height: 250px;
+        padding: 20px;
+        border: 1px solid #ddd;
+        border-radius: 12px;
+        font-family: 'Montserrat', sans-serif;
+        font-size: 1rem;
+        line-height: 1.6;
+        resize: vertical;
+        background: #fafafa;
+        color: var(--text-primary);
+    }
+
+    body.high-contrast .journal-textarea {
+        background: #000;
+        border: 2px solid white;
+        color: #FFFF00;
+    }
+
+    .char-count {
+        text-align: right;
+        font-size: 0.85rem;
+        color: var(--text-secondary);
+        margin-top: 8px;
+    }
+
+    .action-buttons {
+        display: flex;
+        gap: 15px;
+        margin-top: 25px;
+        flex-wrap: wrap;
+    }
+
+    .primary-btn {
+        padding: 15px 35px;
+        border-radius: 50px;
+        border: none;
+        background-color: var(--text-primary);
+        color: #fff;
+        font-size: 1rem;
+        letter-spacing: 0.5px;
+        cursor: pointer;
+        transition: transform 0.2s, background-color 0.3s;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        font-weight: 500;
+    }
+
+    .primary-btn:hover {
+        transform: translateY(-2px);
+        background-color: var(--btn-hover);
+    }
+
+    .secondary-btn {
+        background: transparent;
+        border: 2px solid var(--text-primary);
+        color: var(--text-primary);
+    }
+
+    .secondary-btn:hover {
+        background: var(--text-primary);
+        color: white;
+    }
+
+    body.high-contrast .primary-btn {
+        background: #333;
+        border: 2px solid #FFFF00;
+        color: #FFFF00;
+    }
+
+    .breathe-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 400px;
+        text-align: center;
+    }
+
+    .breathe-circle {
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--accent-color), #52796F);
+        box-shadow: 0 0 40px rgba(132, 169, 140, 0.4);
+        margin-bottom: 30px;
+        transition: all 4s ease-in-out;
+    }
+
+    body.high-contrast .breathe-circle {
+        background: #FFFF00;
+        box-shadow: 0 0 40px rgba(255, 255, 0, 0.6);
+    }
+
+    .breathe-circle.active {
+        transform: scale(1.8);
+    }
+
+    .breathe-text {
+        font-family: 'Cormorant Garamond', serif;
+        font-size: 1.8rem;
+        color: var(--text-secondary);
+        margin-bottom: 20px;
+        min-height: 40px;
+    }
+
+    .breathe-controls {
+        display: flex;
+        gap: 15px;
+    }
+
+    /* --- 10. PAST ENTRIES --- */
+    .entries-list {
+        max-height: 400px;
+        overflow-y: auto;
+        margin-top: 20px;
+    }
+
+    .entry-card {
+        background: #fafafa;
+        border: 1px solid #e0e0e0;
+        border-radius: 10px;
+        padding: 20px;
+        margin-bottom: 15px;
+        transition: all 0.2s;
+    }
+
+    .entry-card:hover {
+        border-color: var(--accent-color);
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+
+    body.high-contrast .entry-card {
+        background: #000;
+        border: 2px solid #00FFFF;
+    }
+
+    .entry-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+
+    .entry-date {
+        font-weight: 600;
+        color: var(--text-primary);
+        font-size: 0.95rem;
+    }
+
+    .entry-mood {
+        font-size: 1.5rem;
+    }
+
+    .entry-text {
+        color: var(--text-secondary);
+        line-height: 1.6;
+        font-size: 0.95rem;
+        max-height: 100px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .delete-entry-btn {
+        background: transparent;
+        border: none;
+        color: var(--warning-color);
+        cursor: pointer;
+        font-size: 1.2rem;
+        padding: 5px 10px;
+        margin-left: 10px;
+    }
+
+    .delete-entry-btn:hover {
+        color: #a33;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 60px 20px;
+        color: var(--text-secondary);
+    }
+
+    .empty-state .emoji {
+        font-size: 3rem;
+        margin-bottom: 15px;
+    }
+
+    /* --- 11. SUCCESS MESSAGE --- */
+    .success-message {
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        background: var(--accent-color);
+        color: white;
+        padding: 20px 30px;
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+        opacity: 0;
+        transform: translateY(20px);
+        pointer-events: none;
+        transition: all 0.3s ease;
+        z-index: 2000;
+    }
+
+    .success-message.show {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    body.high-contrast .success-message {
+        background: #FFFF00;
+        color: #000;
+        border: 2px solid white;
+    }
+
+    /* --- 13. RESPONSIVE DESIGN --- */
+    @media (max-width: 1024px) {
+        .journal-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .navbar {
+            padding: 15px 20px;
+        }
+
+        .nav-links {
+            display: none; /* Could add hamburger menu if needed */
+        }
+
+        .main-container {
+            padding: 120px 5% 60px 5%;
+        }
+
+        .page-header h1 {
+            font-size: 2.8rem;
+        }
+
+        .glass-section {
+            padding: 30px 20px;
+        }
+
+        .mood-btn {
+            min-width: 100px;
+        }
+
+        .action-buttons {
+            flex-direction: column;
+        }
+
+        .primary-btn {
+            width: 100%;
+        }
+
+        .escape-btn-floating {
+            bottom: 20px;
+            right: 20px;
+            font-size: 0.7rem;
+            padding: 10px 16px;
+        }
+    }
+
+    /* Scroll Behavior */
+    html {
+        scroll-behavior: smooth;
+    }
+
+    /* Custom Scrollbar */
+    .entries-list::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    .entries-list::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 10px;
+    }
+
+    .entries-list::-webkit-scrollbar-thumb {
+        background: var(--accent-color);
+        border-radius: 10px;
+    }
+
+    /* Animation Keyframes */
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .glass-section {
+        animation: fadeIn 0.6s ease-out;
+    }
+</style>
+</head>
+<body>
+
+    <!-- Skip to Main Content (Accessibility) -->
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+
+    <canvas id="particle-canvas" aria-hidden="true"></canvas>
+
+    <!-- Sticky Navigation -->
+    <nav class="navbar" role="navigation" aria-label="Main Navigation">
+        <a href="dashboard.html" class="logo">Harmony.</a>
+        <ul class="nav-links">
+            <li><a href="dashboard.html">Home</a></li>
+            <li><a href="dashboard.html#about-section">About</a></li>
+            <li><a href="music.html">Music Therapy</a></li>
+            <li><a href="journal.html">Journaling</a></li>
+        </ul>
+        <button class="accessibility-btn" id="contrast-toggle" aria-label="Toggle High Contrast Mode" title="High Contrast Mode">
+            <span aria-hidden="true">◐</span>
+        </button>
+    </nav>
+
+    <!-- Floating Quick Escape Button -->
+    <button class="escape-btn-floating" onclick="quickEscape()" aria-label="Quick Escape to Google" title="Quick Escape (Ctrl+Shift+E)">
+        QUICK ESCAPE
+    </button>
+
+    <!-- Main Content -->
+    <main class="main-container" id="main-content">
+        <div class="page-header">
+            <h1>Your Safe Space</h1>
+            <p>Express yourself freely. Your entries are securely saved to your account.</p>
+            <p id="auth-status" style="font-size: 0.9rem; margin-top: 10px; color: var(--accent-color);"></p>
+        </div>
+
+        <div class="journal-grid">
+            <!-- Left Column: New Entry -->
+            <div class="glass-section">
+                <h2 class="section-title">How are you feeling today?</h2>
+                
+                <div class="mood-selector" role="radiogroup" aria-label="Select your current mood">
+                    <button class="mood-btn" data-mood="joyful" role="radio" aria-checked="false" onclick="selectMood('joyful', this)">
+                        <span class="emoji" aria-hidden="true">😊</span>
+                        <span>Joyful</span>
+                    </button>
+                    <button class="mood-btn" data-mood="calm" role="radio" aria-checked="false" onclick="selectMood('calm', this)">
+                        <span class="emoji" aria-hidden="true">😌</span>
+                        <span>Calm</span>
+                    </button>
+                    <button class="mood-btn" data-mood="anxious" role="radio" aria-checked="false" onclick="selectMood('anxious', this)">
+                        <span class="emoji" aria-hidden="true">😰</span>
+                        <span>Anxious</span>
+                    </button>
+                    <button class="mood-btn" data-mood="sad" role="radio" aria-checked="false" onclick="selectMood('sad', this)">
+                        <span class="emoji" aria-hidden="true">😢</span>
+                        <span>Sad</span>
+                    </button>
+                    <button class="mood-btn" data-mood="stressed" role="radio" aria-checked="false" onclick="selectMood('stressed', this)">
+                        <span class="emoji" aria-hidden="true">😫</span>
+                        <span>Stressed</span>
+                    </button>
+                    <button class="mood-btn" data-mood="neutral" role="radio" aria-checked="false" onclick="selectMood('neutral', this)">
+                        <span class="emoji" aria-hidden="true">😐</span>
+                        <span>Neutral</span>
+                    </button>
+                </div>
+
+                <label for="journal-entry" class="section-title" style="font-size: 1.3rem; margin-top: 30px; display: block;">
+                    What's on your mind?
+                </label>
+                <textarea 
+                    id="journal-entry" 
+                    class="journal-textarea" 
+                    placeholder="Write freely... no judgment, no pressure. This is your space."
+                    maxlength="5000"
+                    aria-describedby="char-counter"
+                ></textarea>
+                <div id="char-counter" class="char-count" aria-live="polite">0 / 5000 characters</div>
+
+                <div class="action-buttons">
+                    <button class="primary-btn" onclick="saveEntry()" aria-label="Save journal entry">
+                        Save Entry
+                    </button>
+                    <button class="primary-btn secondary-btn" onclick="clearEntry()" aria-label="Clear journal entry">
+                        Clear
+                    </button>
+                    <button class="primary-btn secondary-btn" onclick="deleteAllEntries()" aria-label="Delete all saved entries">
+                        Delete All Data
+                    </button>
+                </div>
+            </div>
+
+            <!-- Right Column: Tools -->
+            <div>
+                <!-- Breathe Tool -->
+                <div class="glass-section">
+                    <h2 class="section-title">Breathe With Me</h2>
+                    <div class="breathe-container">
+                        <div class="breathe-circle" id="breathe-circle" aria-hidden="true"></div>
+                        <p class="breathe-text" id="breathe-instruction" aria-live="polite" aria-atomic="true">
+                            Click "Start" to begin
+                        </p>
+                        <div class="breathe-controls">
+                            <button class="primary-btn" id="breathe-btn" onclick="toggleBreathe()" aria-label="Start breathing exercise">
+                                Start
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Past Entries -->
+                <div class="glass-section" style="margin-top: 30px;">
+                    <h2 class="section-title">Your Journey</h2>
+                    <div class="entries-list" id="entries-list" role="region" aria-label="Past journal entries">
+                        <div class="empty-state">
+                            <div class="emoji" aria-hidden="true">📝</div>
+                            <p>Your entries will appear here</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Crisis Resources (Subtle Footer Section) -->
+        <div class="glass-section" style="margin-top: 50px; text-align: center;">
+            <h3 style="font-family: 'Cormorant Garamond', serif; font-size: 1.5rem; margin: 0 0 15px 0; color: var(--text-primary);">
+                Need someone to talk to?
+            </h3>
+            <p style="color: var(--text-secondary); margin-bottom: 20px;">
+                You're not alone. Help is available 24/7.
+            </p>
+            <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
+                <a href="tel:988" class="primary-btn secondary-btn" style="text-decoration: none;">988 Lifeline</a>
+                <a href="https://www.crisistextline.org" target="_blank" rel="noopener" class="primary-btn secondary-btn" style="text-decoration: none;">Crisis Text Line</a>
+                <a href="https://findahelpline.com" target="_blank" rel="noopener" class="primary-btn secondary-btn" style="text-decoration: none;">Find Local Help</a>
+            </div>
+        </div>
+    </main>
+
+    <!-- Success Message Toast -->
+    <div class="success-message" id="success-toast" role="status" aria-live="polite" aria-atomic="true"></div>
+
+<script>
+    /* ==================== FIREBASE AUTH STATE ==================== */
+    
+    let currentUser = null;
+    
+    // Wait for Firebase to initialize
+    window.addEventListener('load', () => {
+        const auth = window.firebaseAuth;
+        
+        // Monitor authentication state using the imported onAuthStateChanged
+        const checkAuth = setInterval(() => {
+            if (window.firebaseAuth) {
+                clearInterval(checkAuth);
+                monitorAuthState();
+            }
+        }, 100);
+    });
+
+    function monitorAuthState() {
+        const auth = window.firebaseAuth;
+        
+        auth.onAuthStateChanged((user) => {
+            currentUser = user;
+            const authStatus = document.getElementById('auth-status');
+            
+            if (user) {
+                authStatus.textContent = `Logged in as ${user.email}`;
+                authStatus.style.color = 'var(--accent-color)';
+                loadEntries();
+            } else {
+                authStatus.textContent = 'Please log in to save your journal entries';
+                authStatus.style.color = 'var(--warning-color)';
+                // Clear entries display when not logged in
+                const entriesList = document.getElementById('entries-list');
+                entriesList.innerHTML = `
+                    <div class="empty-state">
+                        <div class="emoji" aria-hidden="true">🔒</div>
+                        <p>Log in to access your journal</p>
+                    </div>
+                `;
+            }
+        });
+    }
+
+    /* ==================== ACCESSIBILITY ==================== */
+    
+    // High Contrast Toggle
+    const contrastBtn = document.getElementById('contrast-toggle');
+    
+    // Load saved preference
+    if (localStorage.getItem('highContrast') === 'true') {
+        document.body.classList.add('high-contrast');
+    }
+    
+    contrastBtn.addEventListener('click', () => {
+        document.body.classList.toggle('high-contrast');
+        localStorage.setItem('highContrast', document.body.classList.contains('high-contrast'));
+    });
+
+    // Quick Escape Function (Ctrl+Shift+E)
+    function quickEscape() {
+        window.location.replace('https://www.google.com');
+    }
+
+    document.addEventListener('keydown', (e) => {
+        if (e.ctrlKey && e.shiftKey && e.key === 'E') {
+            e.preventDefault();
+            quickEscape();
+        }
+    });
+
+    /* ==================== MOOD SELECTOR ==================== */
+    
+    let selectedMood = null;
+    const moodEmojis = {
+        joyful: '😊',
+        calm: '😌',
+        anxious: '😰',
+        sad: '😢',
+        stressed: '😫',
+        neutral: '😐'
+    };
+
+    function selectMood(mood, button) {
+        selectedMood = mood;
+        
+        // Update ARIA and visual state
+        document.querySelectorAll('.mood-btn').forEach(btn => {
+            btn.classList.remove('selected');
+            btn.setAttribute('aria-checked', 'false');
+        });
+        
+        button.classList.add('selected');
+        button.setAttribute('aria-checked', 'true');
+    }
+
+    /* ==================== JOURNAL ENTRY ==================== */
+    
+    const journalTextarea = document.getElementById('journal-entry');
+    const charCounter = document.getElementById('char-counter');
+
+    journalTextarea.addEventListener('input', () => {
+        const length = journalTextarea.value.length;
+        charCounter.textContent = `${length} / 5000 characters`;
+    });
+
+    async function saveEntry() {
+        // Check if user is logged in
+        if (!currentUser) {
+            showToast('Please log in to save entries', 'warning');
+            return;
+        }
+
+        const text = journalTextarea.value.trim();
+        
+        if (!text) {
+            showToast('Please write something before saving', 'warning');
+            journalTextarea.focus();
+            return;
+        }
+
+        if (!selectedMood) {
+            showToast('Please select how you\'re feeling', 'warning');
+            return;
+        }
+
+        try {
+            const { collection, addDoc } = window.firestoreModules;
+            const db = window.firebaseDB;
+            
+            // Save to Firestore
+            await addDoc(collection(db, 'journalEntries'), {
+                userId: currentUser.uid,
+                userEmail: currentUser.email,
+                date: new Date().toISOString(),
+                displayDate: new Date().toLocaleString(),
+                mood: selectedMood,
+                text: text,
+                timestamp: Date.now()
+            });
+
+            showToast('Entry saved successfully! 💚');
+            clearEntry();
+            // loadEntries() will be called automatically via onSnapshot
+        } catch (error) {
+            console.error('Error saving entry:', error);
+            showToast('Error saving entry. Please try again.', 'warning');
+        }
+    }
+
+    function clearEntry() {
+        journalTextarea.value = '';
+        charCounter.textContent = '0 / 5000 characters';
+        selectedMood = null;
+        
+        document.querySelectorAll('.mood-btn').forEach(btn => {
+            btn.classList.remove('selected');
+            btn.setAttribute('aria-checked', 'false');
+        });
+    }
+
+    function loadEntries() {
+        if (!currentUser) {
+            return;
+        }
+
+        const { collection, query, where, orderBy, onSnapshot } = window.firestoreModules;
+        const db = window.firebaseDB;
+        
+        const entriesList = document.getElementById('entries-list');
+        entriesList.innerHTML = '<p style="text-align: center; color: var(--text-secondary);">Loading...</p>';
+
+        // Real-time listener for user's entries
+        const q = query(
+            collection(db, 'journalEntries'),
+            where('userId', '==', currentUser.uid),
+            orderBy('timestamp', 'desc')
+        );
+
+        onSnapshot(q, (snapshot) => {
+            const entries = [];
+            snapshot.forEach((doc) => {
+                entries.push({ id: doc.id, ...doc.data() });
+            });
+
+            if (entries.length === 0) {
+                entriesList.innerHTML = `
+                    <div class="empty-state">
+                        <div class="emoji" aria-hidden="true">📝</div>
+                        <p>Your entries will appear here</p>
+                    </div>
+                `;
+                return;
+            }
+
+            entriesList.innerHTML = entries.map(entry => `
+                <div class="entry-card">
+                    <div class="entry-header">
+                        <span class="entry-date">${entry.displayDate}</span>
+                        <div>
+                            <span class="entry-mood" aria-label="Mood: ${entry.mood}">${moodEmojis[entry.mood]}</span>
+                            <button 
+                                class="delete-entry-btn" 
+                                onclick="deleteEntry('${entry.id}')"
+                                aria-label="Delete entry from ${entry.displayDate}"
+                                title="Delete this entry"
+                            >
+                                ×
+                            </button>
+                        </div>
+                    </div>
+                    <p class="entry-text">${entry.text}</p>
+                </div>
+            `).join('');
+        }, (error) => {
+            console.error('Error loading entries:', error);
+            entriesList.innerHTML = `
+                <div class="empty-state">
+                    <p style="color: var(--warning-color);">Error loading entries</p>
+                </div>
+            `;
+        });
+    }
+
+    async function deleteEntry(entryId) {
+        if (!confirm('Are you sure you want to delete this entry?')) return;
+
+        try {
+            const { doc, deleteDoc } = window.firestoreModules;
+            const db = window.firebaseDB;
+            
+            await deleteDoc(doc(db, 'journalEntries', entryId));
+            showToast('Entry deleted');
+            // loadEntries() will be called automatically via onSnapshot
+        } catch (error) {
+            console.error('Error deleting entry:', error);
+            showToast('Error deleting entry', 'warning');
+        }
+    }
+
+    async function deleteAllEntries() {
+        if (!currentUser) {
+            showToast('Please log in first', 'warning');
+            return;
+        }
+
+        if (!confirm('⚠️ This will permanently delete ALL your journal entries. Are you absolutely sure?')) return;
+        
+        if (!confirm('Last chance! This action cannot be undone. Delete everything?')) return;
+
+        try {
+            const { collection, query, where, getDocs, deleteDoc, doc } = window.firestoreModules;
+            const db = window.firebaseDB;
+            
+            const q = query(
+                collection(db, 'journalEntries'),
+                where('userId', '==', currentUser.uid)
+            );
+
+            const snapshot = await getDocs(q);
+            const deletePromises = [];
+            
+            snapshot.forEach((document) => {
+                deletePromises.push(deleteDoc(doc(db, 'journalEntries', document.id)));
+            });
+
+            await Promise.all(deletePromises);
+            showToast('All entries deleted');
+            // loadEntries() will be called automatically via onSnapshot
+        } catch (error) {
+            console.error('Error deleting all entries:', error);
+            showToast('Error deleting entries', 'warning');
+        }
+    }
+
+    /* ==================== BREATHE ANIMATION ==================== */
+    
+    let breatheInterval = null;
+    let breathePhase = 0; // 0: idle, 1: inhale, 2: hold, 3: exhale
+    
+    function toggleBreathe() {
+        const btn = document.getElementById('breathe-btn');
+        const circle = document.getElementById('breathe-circle');
+        const instruction = document.getElementById('breathe-instruction');
+
+        if (breatheInterval) {
+            // Stop
+            clearInterval(breatheInterval);
+            breatheInterval = null;
+            circle.classList.remove('active');
+            btn.textContent = 'Start';
+            btn.setAttribute('aria-label', 'Start breathing exercise');
+            instruction.textContent = 'Click "Start" to begin';
+            breathePhase = 0;
+        } else {
+            // Start
+            btn.textContent = 'Stop';
+            btn.setAttribute('aria-label', 'Stop breathing exercise');
+            breathePhase = 1;
+            runBreatheSequence();
+            breatheInterval = setInterval(runBreatheSequence, 4000);
+        }
+    }
+
+    function runBreatheSequence() {
+        const circle = document.getElementById('breathe-circle');
+        const instruction = document.getElementById('breathe-instruction');
+
+        switch(breathePhase) {
+            case 1: // Inhale
+                circle.classList.add('active');
+                instruction.textContent = 'Breathe In...';
+                breathePhase = 2;
+                break;
+            case 2: // Hold
+                instruction.textContent = 'Hold...';
+                breathePhase = 3;
+                break;
+            case 3: // Exhale
+                circle.classList.remove('active');
+                instruction.textContent = 'Breathe Out...';
+                breathePhase = 1;
+                break;
+        }
+    }
+
+    
+    function showToast(message, type = 'success') {
+        const toast = document.getElementById('success-toast');
+        toast.textContent = message;
+        toast.classList.add('show');
+        
+        setTimeout(() => {
+            toast.classList.remove('show');
+        }, 3000);
+    }
+    
+    const canvas = document.getElementById('particle-canvas');
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    let particlesArray;
+
+    window.addEventListener('resize', () => {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        init();
+    });
+
+    const mouse = { x: null, y: null, radius: 150 };
+
+    window.addEventListener('mousemove', (event) => {
+        mouse.x = event.x;
+        mouse.y = event.y;
+    });
+
+    class Particle {
+        constructor(x, y, directionX, directionY, size, color) {
+            this.x = x;
+            this.y = y;
+            this.directionX = directionX;
+            this.directionY = directionY;
+            this.size = size;
+            this.color = color;
+        }
+        draw() {
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2, false);
+            ctx.fillStyle = document.body.classList.contains('high-contrast') ? '#FFFF00' : '#84A98C';
+            ctx.fill();
+        }
+        update() {
+            if (this.x > canvas.width || this.x < 0) this.directionX = -this.directionX;
+            if (this.y > canvas.height || this.y < 0) this.directionY = -this.directionY;
+
+            let dx = mouse.x - this.x;
+            let dy = mouse.y - this.y;
+            let distance = Math.sqrt(dx*dx + dy*dy);
+
+            if (distance < mouse.radius + this.size) {
+                if (mouse.x < this.x && this.x < canvas.width - this.size * 10) this.x += 3;
+                if (mouse.x > this.x && this.x > this.size * 10) this.x -= 3;
+                if (mouse.y < this.y && this.y < canvas.height - this.size * 10) this.y += 3;
+                if (mouse.y > this.y && this.y > this.size * 10) this.y -= 3;
+            }
+            
+            this.x += this.directionX;
+            this.y += this.directionY;
+            this.draw();
+        }
+    }
+
+    function init() {
+        particlesArray = [];
+        let numberOfParticles = (canvas.height * canvas.width) / 9000;
+        for (let i = 0; i < numberOfParticles; i++) {
+            let size = (Math.random() * 3) + 1;
+            let x = (Math.random() * ((innerWidth - size * 2) - (size * 2)) + size * 2);
+            let y = (Math.random() * ((innerHeight - size * 2) - (size * 2)) + size * 2);
+            let directionX = (Math.random() * 0.5) - 0.25; 
+            let directionY = (Math.random() * 0.5) - 0.25;
+            let color = '#84A98C';
+            particlesArray.push(new Particle(x, y, directionX, directionY, size, color));
+        }
+    }
+
+    function animate() {
+        requestAnimationFrame(animate);
+        ctx.clearRect(0, 0, innerWidth, innerHeight);
+        
+        for (let i = 0; i < particlesArray.length; i++) {
+            particlesArray[i].update();
+        }
+        connect();
+    }
+
+    function connect() {
+        let opacityValue = 1;
+        for (let a = 0; a < particlesArray.length; a++) {
+            for (let b = a; b < particlesArray.length; b++) {
+                let distance = ((particlesArray[a].x - particlesArray[b].x) * (particlesArray[a].x - particlesArray[b].x)) + 
+                               ((particlesArray[a].y - particlesArray[b].y) * (particlesArray[a].y - particlesArray[b].y));
+                if (distance < (canvas.width/7) * (canvas.height/7)) {
+                    opacityValue = 1 - (distance / 20000);
+                    ctx.strokeStyle = document.body.classList.contains('high-contrast') 
+                        ? 'rgba(255, 255, 0,' + opacityValue + ')' 
+                        : 'rgba(132, 169, 140,' + opacityValue + ')';
+                    ctx.lineWidth = 1;
+                    ctx.beginPath();
+                    ctx.moveTo(particlesArray[a].x, particlesArray[a].y);
+                    ctx.lineTo(particlesArray[b].x, particlesArray[b].y);
+                    ctx.stroke();
+                }
+            }
+        }
+    }
+
+    init();
+    animate();
+</script>
+</body>
+</html>

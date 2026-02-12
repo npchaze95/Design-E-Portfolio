@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Harmony Music Therapy - A calming space for students to relieve stress.">
+<title>Harmony | Dashboard</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,600;1,400&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+  import { getAuth } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+  
+  const firebaseConfig = {
+    apiKey: "AIzaSyDb1hmgoJ-Ynep93t0x5efMr4PT3S5Ratc",
+    authDomain: "design-e-portfolio-735b8.firebaseapp.com",
+    projectId: "design-e-portfolio-735b8",
+    storageBucket: "design-e-portfolio-735b8.firebasestorage.app",
+    messagingSenderId: "1057882113508",
+    appId: "1:1057882113508:web:aad0d746bfdcd5e97bb3f1",
+    measurementId: "G-VL7K5DB9N3"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+</script>
+
+<style>
+    /* --- 1. CORE VARIABLES (The Aesthetic Engine) --- */
+    :root {
+        /* Calming Palette: Sage Green, Soft White, Charcoal */
+        --bg-color: #F0F4F3;
+        --text-primary: #2F3E46;
+        --text-secondary: #52796F;
+        --accent-color: #84A98C;
+        --glass-bg: rgba(255, 255, 255, 0.65);
+        --glass-border: rgba(255, 255, 255, 0.8);
+        --shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
+        --btn-hover: #354F52;
+        --focus-ring: #2F3E46;
+    }
+
+    /* WCAG High Contrast Mode */
+    body.high-contrast {
+        --bg-color: #000000;
+        --text-primary: #FFFF00;
+        --text-secondary: #00FFFF;
+        --accent-color: #FFFFFF;
+        --glass-bg: #000000;
+        --glass-border: #FFFFFF;
+        --shadow: none;
+        --btn-hover: #FFFFFF;
+        --focus-ring: #FFFF00;
+    }
+
+    /* --- 2. GLOBAL STYLES --- */
+    * {
+        box-sizing: border-box;
+        transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+    }
+
+    body, html {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        height: 100%;
+        background-color: var(--bg-color);
+        font-family: 'Montserrat', sans-serif;
+        color: var(--text-primary);
+        overflow-x: hidden;
+    }
+
+    /* Accessibility Focus States (Keyboard Navigation) */
+    button:focus-visible, a:focus-visible, input:focus-visible {
+        outline: 3px solid var(--focus-ring);
+        outline-offset: 2px;
+    }
+
+    /* Background Canvas */
+    #particle-canvas {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -1; /* Stays behind content */
+    }
+
+    /* --- 3. NAVIGATION --- */
+    .navbar {
+        position: fixed;
+        top: 0;
+        width: 100%;
+        padding: 20px 40px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        z-index: 1000;
+        border-bottom: 1px solid var(--glass-border);
+    }
+    
+    body.high-contrast .navbar { background: #000; border-bottom: 2px solid white; }
+
+    .logo {
+        font-family: 'Cormorant Garamond', serif;
+        font-size: 1.8rem;
+        font-weight: 600;
+        letter-spacing: 1px;
+        color: var(--text-primary);
+        text-decoration: none;
+    }
+
+    .nav-links {
+        display: flex;
+        gap: 30px;
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
+
+    .nav-links a {
+        text-decoration: none;
+        color: var(--text-secondary);
+        font-weight: 500;
+        font-size: 0.95rem;
+        position: relative;
+    }
+
+    .nav-links a::after {
+        content: '';
+        position: absolute;
+        width: 0;
+        height: 2px;
+        bottom: -5px;
+        left: 0;
+        background-color: var(--accent-color);
+        transition: width 0.3s;
+    }
+
+    .nav-links a:hover::after { width: 100%; }
+
+    /* Accessibility Toggle Button */
+    .accessibility-btn {
+        background: transparent;
+        border: 2px solid var(--text-secondary);
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--text-primary);
+        font-size: 1.2rem;
+    }
+
+    /* --- 4. MAIN HERO SECTION --- */
+    .hero-container {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        text-align: center;
+        padding: 20px;
+        position: relative;
+    }
+
+    .glass-card {
+        background: var(--glass-bg);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border: 1px solid var(--glass-border);
+        padding: 60px 50px;
+        border-radius: 24px;
+        box-shadow: var(--shadow);
+        max-width: 800px;
+        width: 90%;
+        animation: fadeInUp 1.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+
+    h1 {
+        font-family: 'Cormorant Garamond', serif;
+        font-size: 4rem;
+        margin: 0 0 10px 0;
+        font-weight: 300;
+        line-height: 1.1;
+    }
+
+    .subtitle {
+        font-size: 1.1rem;
+        color: var(--text-secondary);
+        margin-bottom: 40px;
+        line-height: 1.6;
+    }
+
+    .cta-btn {
+        padding: 18px 45px;
+        border-radius: 50px;
+        border: none;
+        background-color: var(--text-primary);
+        color: #fff;
+        font-size: 1rem;
+        letter-spacing: 1px;
+        cursor: pointer;
+        transition: transform 0.2s, background-color 0.3s;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        text-decoration: none;
+        display: inline-block;
+    }
+    
+    body.high-contrast .cta-btn { background-color: #333; border: 2px solid yellow; color: yellow; }
+
+    .cta-btn:hover {
+        transform: translateY(-3px);
+        background-color: var(--text-secondary);
+    }
+
+    /* --- 5. QUESTIONNAIRE MODAL --- */
+    .modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(47, 62, 70, 0.4); /* Dim background */
+        backdrop-filter: blur(5px);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 2000;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.4s ease;
+    }
+
+    .modal-overlay.active {
+        opacity: 1;
+        pointer-events: all;
+    }
+
+    .modal-content {
+        background: #fff;
+        padding: 50px;
+        border-radius: 20px;
+        width: 90%;
+        max-width: 600px;
+        position: relative;
+        transform: scale(0.9);
+        transition: transform 0.4s ease;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+    }
+
+    body.high-contrast .modal-content { background: #000; border: 2px solid white; }
+
+    .modal-overlay.active .modal-content { transform: scale(1); }
+
+    .close-modal {
+        position: absolute;
+        top: 20px;
+        right: 25px;
+        font-size: 1.5rem;
+        cursor: pointer;
+        background: none;
+        border: none;
+        color: var(--text-secondary);
+    }
+
+    .question-step {
+        display: none; /* Hidden by default */
+        animation: fadeIn 0.5s ease;
+    }
+
+    .question-step.active { display: block; }
+
+    .q-title {
+        font-family: 'Cormorant Garamond', serif;
+        font-size: 2rem;
+        margin-bottom: 30px;
+        color: var(--text-primary);
+        line-height: 1.2;
+    }
+
+    .option-btn {
+        display: block;
+        width: 100%;
+        padding: 15px;
+        margin-bottom: 12px;
+        border: 1px solid #ddd;
+        border-radius: 12px;
+        background: #fafafa;
+        text-align: left;
+        cursor: pointer;
+        font-size: 1rem;
+        transition: all 0.2s;
+        color: var(--text-primary);
+        font-family: 'Montserrat', sans-serif;
+    }
+
+    .option-btn:hover, .option-btn:focus {
+        background: var(--bg-color);
+        border-color: var(--accent-color);
+        padding-left: 20px; /* Slight movement animation */
+    }
+
+    /* Suggestion Box */
+    #suggestion-result {
+        display: none;
+        text-align: center;
+    }
+    
+    .result-track {
+        background: #e9ecef;
+        padding: 20px;
+        border-radius: 10px;
+        margin-top: 20px;
+        margin-bottom: 20px;
+        font-weight: 600;
+        color: var(--text-secondary);
+    }
+
+    /* --- 6. ABOUT SECTION --- */
+    #about-section {
+        padding: 100px 10%;
+        background: var(--bg-color);
+        position: relative;
+        z-index: 1;
+    }
+    
+    .about-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 50px;
+        align-items: center;
+    }
+
+    .about-text h2 {
+        font-family: 'Cormorant Garamond', serif;
+        font-size: 2.5rem;
+        color: var(--text-primary);
+    }
+
+    .about-text p {
+        line-height: 1.8;
+        color: var(--text-primary);
+        margin-bottom: 20px;
+    }
+
+    /* Abstract Shape Animation */
+    .morph-shape {
+        width: 100%;
+        height: 300px;
+        background: linear-gradient(120deg, #dcebe6 0%, #f0f4f3 100%);
+        border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+        animation: morph 8s ease-in-out infinite;
+        box-shadow: inset 0 0 20px rgba(0,0,0,0.05);
+    }
+
+    @keyframes fadeInUp {
+        from { opacity: 0; transform: translateY(30px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    
+    @keyframes fadeIn {
+        from { opacity: 0; } to { opacity: 1; }
+    }
+
+    @keyframes morph {
+        0% { border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%; }
+        50% { border-radius: 70% 30% 30% 70% / 60% 40% 60% 40%; }
+        100% { border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%; }
+    }
+
+    /* Mobile Responsive */
+    @media (max-width: 768px) {
+        h1 { font-size: 2.8rem; }
+        .about-grid { grid-template-columns: 1fr; }
+        .navbar { padding: 15px 20px; }
+        .nav-links { display: none; } /* Could add hamburger menu if needed */
+        .glass-card { padding: 40px 20px; }
+    }
+
+</style>
+</head>
+<body>
+
+    <canvas id="particle-canvas"></canvas>
+
+    <nav class="navbar" role="navigation" aria-label="Main Navigation">
+        <a href="#" class="logo">Harmony.</a>
+        <ul class="nav-links">
+            <li><a href="#hero">Home</a></li>
+            <li><a href="#about-section">About</a></li>
+            <li><a href="music.html">Music Therapy</a></li>
+            <li><a href="journal.html">Journaling</a></li>
+        </ul>
+        <button class="accessibility-btn" id="contrast-toggle" aria-label="Toggle High Contrast Mode" title="High Contrast Mode">
+            <span aria-hidden="true">◐</span>
+        </button>
+    </nav>
+
+    <section id="hero" class="hero-container">
+        <div class="glass-card">
+            <h1 id="greeting">Breathe In.</h1>
+            <p class="subtitle">
+                Academic pressure is real, but so is your peace. <br>
+                Let us curate a soundscape tailored to your current state of mind.
+            </p>
+            <button class="cta-btn" onclick="openModal()" aria-haspopup="dialog">Check In With Yourself</button>
+        </div>
+    </section>
+
+    <div class="modal-overlay" id="questionnaire-modal" role="dialog" aria-labelledby="modal-title" aria-modal="true">
+        <div class="modal-content">
+            <button class="close-modal" onclick="closeModal()" aria-label="Close Modal">&times;</button>
+            
+            <div class="question-step active" id="step-1">
+                <h2 id="modal-title" class="q-title">A quick check-in with yourself</h2>
+                <button class="option-btn" onclick="nextStep(1, 'anxiety')">Racing thoughts & Anxious</button>
+                <button class="option-btn" onclick="nextStep(1, 'focus')">Foggy & Hard to Focus</button>
+                <button class="option-btn" onclick="nextStep(1, 'exhausted')">Mentally Exhausted / Burnout</button>
+                <button class="option-btn" onclick="nextStep(1, 'panic')">On the verge of Panic</button>
+            </div>
+
+            <div class="question-step" id="step-2">
+                <h2 class="q-title">Where do you hold tension physically?</h2>
+                <button class="option-btn" onclick="finalizeResult('shoulders')">Shoulders & Jaw (Tightness)</button>
+                <button class="option-btn" onclick="finalizeResult('chest')">Chest (Shallow Breathing)</button>
+                <button class="option-btn" onclick="finalizeResult('head')">Head (Headache/Heavy)</button>
+                <button class="option-btn" onclick="finalizeResult('none')">Just general fatigue</button>
+            </div>
+
+            <div id="suggestion-result">
+                <h2 class="q-title">We recommend:</h2>
+                <p>Based on your check-in, this frequency will help ground you.</p>
+                
+                <div class="result-track" id="track-name">Loading...</div>
+                
+                <br>
+                <button class="cta-btn" onclick="goToMusic()">Listen Now</button>
+            </div>
+        </div>
+    </div>
+
+    <section id="about-section">
+        <div class="about-grid">
+            <div class="about-text">
+                <h2>Understanding Your Identity</h2>
+                <p>
+                    The journey of learning is a difficult one, but it is a journey that is worth taking. Good things come to those who wait.
+                    <strong>Harmony</strong> is designed using the principles of psychoacoustics—how sound affects the nervous system.
+                </p>
+                <p>
+                    Whether you need to focus on your Personal Project or decompress after an exam, 
+                    our tools are here to support your mental wellbeing.
+                </p>
+                <div style="margin-top: 30px;">
+                    <a href="music.html" class="cta-btn" style="margin-right: 10px;">Music Therapy</a>
+                    <a href="journal.html" class="cta-btn" style="background: transparent; border: 1px solid var(--text-primary); color: var(--text-primary);">Daily Journal</a>
+                </div>
+            </div>
+            <div class="about-visual">
+                <div class="morph-shape"></div>
+            </div>
+        </div>
+    </section>
+
+<script>
+    /* --- LOGIC 1: ACCESSIBILITY TOGGLE --- */
+    const contrastBtn = document.getElementById('contrast-toggle');
+    contrastBtn.addEventListener('click', () => {
+        document.body.classList.toggle('high-contrast');
+    });
+
+    /* --- LOGIC 2: QUESTIONNAIRE SYSTEM --- */
+    let userState = { mood: '', physical: '' };
+
+    function openModal() {
+        document.getElementById('questionnaire-modal').classList.add('active');
+        // Reset steps
+        document.getElementById('step-1').classList.add('active');
+        document.getElementById('step-2').classList.remove('active');
+        document.getElementById('suggestion-result').style.display = 'none';
+    }
+
+    function closeModal() {
+        document.getElementById('questionnaire-modal').classList.remove('active');
+    }
+
+    // Close on Escape key (Accessibility)
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') closeModal();
+    });
+
+    function nextStep(currentStep, value) {
+        if(currentStep === 1) {
+            userState.mood = value;
+            document.getElementById('step-1').classList.remove('active');
+            document.getElementById('step-2').classList.add('active');
+        }
+    }
+
+    function finalizeResult(value) {
+        userState.physical = value;
+        document.getElementById('step-2').classList.remove('active');
+        document.getElementById('suggestion-result').style.display = 'block';
+        
+        // Intelligent Logic for Suggestion
+        let suggestion = "Binaural Beats (Alpha Waves)"; // Default
+        
+        if (userState.mood === 'panic' || userState.mood === 'anxiety') {
+            suggestion = "432Hz Grounding Tone";
+        } else if (userState.mood === 'exhausted') {
+            suggestion = "Delta Waves (Deep Rest)";
+        } else if (userState.mood === 'focus') {
+            suggestion = "Lofi & Pink Noise";
+        }
+
+        document.getElementById('track-name').innerText = suggestion;
+    }
+
+    function goToMusic() {
+        window.location.href = "music.html";
+    }
+
+    const canvas = document.getElementById('particle-canvas');
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    let particlesArray;
+
+    window.addEventListener('resize', () => {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        init();
+    });
+
+    // Mouse Interaction
+    const mouse = { x: null, y: null, radius: 150 };
+
+    window.addEventListener('mousemove', (event) => {
+        mouse.x = event.x;
+        mouse.y = event.y;
+    });
+
+    class Particle {
+        constructor(x, y, directionX, directionY, size, color) {
+            this.x = x;
+            this.y = y;
+            this.directionX = directionX;
+            this.directionY = directionY;
+            this.size = size;
+            this.color = color;
+        }
+        draw() {
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2, false);
+            // Check High Contrast for Color
+            if(document.body.classList.contains('high-contrast')) {
+                 ctx.fillStyle = '#FFFF00';
+            } else {
+                 ctx.fillStyle = '#84A98C';
+            }
+            ctx.fill();
+        }
+        update() {
+            // Boundary Check
+            if (this.x > canvas.width || this.x < 0) this.directionX = -this.directionX;
+            if (this.y > canvas.height || this.y < 0) this.directionY = -this.directionY;
+
+            // Collision Detection with Mouse
+            let dx = mouse.x - this.x;
+            let dy = mouse.y - this.y;
+            let distance = Math.sqrt(dx*dx + dy*dy);
+
+            if (distance < mouse.radius + this.size) {
+                if (mouse.x < this.x && this.x < canvas.width - this.size * 10) this.x += 3;
+                if (mouse.x > this.x && this.x > this.size * 10) this.x -= 3;
+                if (mouse.y < this.y && this.y < canvas.height - this.size * 10) this.y += 3;
+                if (mouse.y > this.y && this.y > this.size * 10) this.y -= 3;
+            }
+            
+            this.x += this.directionX;
+            this.y += this.directionY;
+            this.draw();
+        }
+    }
+
+    function init() {
+        particlesArray = [];
+        let numberOfParticles = (canvas.height * canvas.width) / 9000;
+        for (let i = 0; i < numberOfParticles; i++) {
+            let size = (Math.random() * 3) + 1;
+            let x = (Math.random() * ((innerWidth - size * 2) - (size * 2)) + size * 2);
+            let y = (Math.random() * ((innerHeight - size * 2) - (size * 2)) + size * 2);
+            let directionX = (Math.random() * 0.5) - 0.25; 
+            let directionY = (Math.random() * 0.5) - 0.25;
+            let color = '#84A98C';
+            particlesArray.push(new Particle(x, y, directionX, directionY, size, color));
+        }
+    }
+
+    function animate() {
+        requestAnimationFrame(animate);
+        ctx.clearRect(0, 0, innerWidth, innerHeight);
+        
+        for (let i = 0; i < particlesArray.length; i++) {
+            particlesArray[i].update();
+        }
+        connect();
+    }
+
+    function connect() {
+        let opacityValue = 1;
+        for (let a = 0; a < particlesArray.length; a++) {
+            for (let b = a; b < particlesArray.length; b++) {
+                let distance = ((particlesArray[a].x - particlesArray[b].x) * (particlesArray[a].x - particlesArray[b].x)) + 
+                               ((particlesArray[a].y - particlesArray[b].y) * (particlesArray[a].y - particlesArray[b].y));
+                if (distance < (canvas.width/7) * (canvas.height/7)) {
+                    opacityValue = 1 - (distance / 20000);
+                    
+                    if(document.body.classList.contains('high-contrast')) {
+                         ctx.strokeStyle = 'rgba(255, 255, 0,' + opacityValue + ')';
+                    } else {
+                         ctx.strokeStyle = 'rgba(132, 169, 140,' + opacityValue + ')';
+                    }
+                    
+                    ctx.lineWidth = 1;
+                    ctx.beginPath();
+                    ctx.moveTo(particlesArray[a].x, particlesArray[a].y);
+                    ctx.lineTo(particlesArray[b].x, particlesArray[b].y);
+                    ctx.stroke();
+                }
+            }
+        }
+    }
+
+    init();
+    animate();
+</script>
+</body>
+</html>
