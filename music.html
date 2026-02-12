@@ -354,41 +354,63 @@
         accent-color: var(--accent-color);
     }
 
-    /* ─── High-contrast audio controls overrides ─── */
+    /* ─── High-contrast: wrap each audio in a bright container ─── */
+    body.high-contrast .audio-wrapper {
+        background-color: #222200;
+        border: 3px solid #FFFF00;
+        border-radius: 14px;
+        padding: 10px 8px;
+        margin-bottom: 15px;
+        box-shadow: 0 0 12px rgba(255, 255, 0, 0.4);
+    }
+
+    body.high-contrast .audio-player {
+        margin-bottom: 0;
+        border-radius: 8px;
+        width: 100%;
+    }
+
+    /* Panel background */
     body.high-contrast audio::-webkit-media-controls-panel {
-        background-color: #000000;
-        border: 1px solid #FFFF00;
+        background-color: #1a1a00;
         border-radius: 8px;
     }
 
+    /* Time text — bright yellow, larger */
     body.high-contrast audio::-webkit-media-controls-current-time-display,
     body.high-contrast audio::-webkit-media-controls-time-remaining-display {
         color: #FFFF00;
-        text-shadow: none;
+        font-size: 14px;
+        font-weight: 700;
+        text-shadow: 0 0 6px rgba(255,255,0,0.8);
     }
 
+    /* Play / pause / mute buttons — invert to yellow */
     body.high-contrast audio::-webkit-media-controls-play-button,
     body.high-contrast audio::-webkit-media-controls-mute-button {
-        filter: invert(1) sepia(1) saturate(100) hue-rotate(10deg);
+        filter: brightness(0) saturate(100%) invert(99%) sepia(97%) saturate(700%) hue-rotate(10deg);
+        transform: scale(1.15);
     }
 
+    /* Progress bar track */
     body.high-contrast audio::-webkit-media-controls-timeline {
         accent-color: #FFFF00;
-        background-color: #333;
-        border-radius: 4px;
+        background: #444400;
+        border-radius: 6px;
+        height: 6px;
     }
 
+    /* Volume slider */
     body.high-contrast audio::-webkit-media-controls-volume-slider {
         accent-color: #FFFF00;
-        background-color: #333;
-        border-radius: 4px;
+        background: #444400;
+        border-radius: 6px;
     }
 
-    /* Firefox high-contrast audio support */
+    /* Firefox fallback */
     body.high-contrast audio {
         color-scheme: dark;
         accent-color: #FFFF00;
-        background-color: #000;
     }
 
     .download-btn {
@@ -579,10 +601,12 @@
                     The 432Hz frequency is known as the "natural tuning" that resonates with the universe. 
                     Perfect for moments of high anxiety or panic attacks. This tone helps anchor you back to the present.
                 </p>
-                <audio class="audio-player" controls aria-label="432Hz Grounding Tone audio player">
-                    <source src="432meditation.mp3" type="audio/mpeg">
-                    Your browser does not support the audio element.
-                </audio>
+                <div class="audio-wrapper">
+                    <audio class="audio-player" controls aria-label="432Hz Grounding Tone audio player">
+                        <source src="432meditation.mp3" type="audio/mpeg">
+                        Your browser does not support the audio element.
+                    </audio>
+                </div>
                 <a href="432meditation.mp3" download class="download-btn" aria-label="Download 432Hz Grounding Tone">
                     Download Track
                 </a>
@@ -602,10 +626,12 @@
                     Delta waves are the slowest brain waves associated with deep, dreamless sleep and healing. 
                     Use this when you're completely mentally exhausted or experiencing burnout. Allow your mind to rest.
                 </p>
-                <audio class="audio-player" controls aria-label="Delta Waves audio player">
-                    <source src="binaurale.mp3" type="audio/mpeg">
-                    Your browser does not support the audio element.
-                </audio>
+                <div class="audio-wrapper">
+                    <audio class="audio-player" controls aria-label="Delta Waves audio player">
+                        <source src="binaurale.mp3" type="audio/mpeg">
+                        Your browser does not support the audio element.
+                    </audio>
+                </div>
                 <a href="binaurale.mp3" download class="download-btn" aria-label="Download Delta Waves">
                     Download Track
                 </a>
@@ -625,10 +651,12 @@
                     Pink noise combined with lo-fi beats masks distracting sounds and helps maintain focus. 
                     Ideal for when you feel foggy and struggle to concentrate on assignments or exam prep.
                 </p>
-                <audio class="audio-player" controls aria-label="Lofi and Pink Noise audio player">
-                    <source src="lofi.mp3" type="audio/mpeg">
-                    Your browser does not support the audio element.
-                </audio>
+                <div class="audio-wrapper">
+                    <audio class="audio-player" controls aria-label="Lofi and Pink Noise audio player">
+                        <source src="lofi.mp3" type="audio/mpeg">
+                        Your browser does not support the audio element.
+                    </audio>
+                </div>
                 <a href="lofi.mp3" download class="download-btn" aria-label="Download Lofi & Pink Noise">
                     Download Track
                 </a>
@@ -648,10 +676,12 @@
                     Alpha waves promote relaxed alertness and reduce stress. Use headphones for maximum effect. 
                     This track helps calm racing thoughts while maintaining mental clarity.
                 </p>
-                <audio class="audio-player" controls aria-label="Binaural Beats Alpha Waves audio player">
-                    <source src="simplemeditation.mp3" type="audio/mpeg">
-                    Your browser does not support the audio element.
-                </audio>
+                <div class="audio-wrapper">
+                    <audio class="audio-player" controls aria-label="Binaural Beats Alpha Waves audio player">
+                        <source src="simplemeditation.mp3" type="audio/mpeg">
+                        Your browser does not support the audio element.
+                    </audio>
+                </div>
                 <a href="simplemeditation.mp3" download class="download-btn" aria-label="Download Binaural Beats">
                     Download Track
                 </a>
@@ -837,5 +867,4 @@
     animate();
 </script>
 </body>
-</html>
 </html>
